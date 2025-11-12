@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Inicia sesión en Café del Día para realizar tus pedidos de café online.">
+    <meta name="keywords" content="café, login, iniciar sesión, pedidos café">
+    <title>Iniciar Sesión - Café del Día</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/login.css">
+</head>
+<body>
+    <main class="login-container">
+        <div class="login-wrapper">
+            <!-- Logo -->
+            <header class="logo-section">
+                <span class="material-symbols-outlined logo-icon" aria-hidden="true">
+                    coffee
+                </span>
+                <h1 class="logo-title">Café del Día</h1>
+            </header>
+
+            <!-- Form Container -->
+            <section class="form-container">
+                <!-- Heading -->
+                <div class="form-heading">
+                    <h2 class="form-title">Bienvenido de vuelta</h2>
+                </div>
+
+                <!-- Form Fields -->
+                <form class="form-fields" action="/login" method="POST">
+                    <!-- Username Field -->
+                    <label class="field-label">
+                        <span class="label-text">Usuario o Email</span>
+                        <input 
+                            class="form-input" 
+                            type="text"
+                            name="username"
+                            placeholder="Ingresa tu usuario o email" 
+                            autocomplete="username"
+                            required
+                            aria-required="true"
+                        >
+                    </label>
+
+                    <!-- Password Field -->
+                    <label class="field-label">
+                        <span class="label-text">Contraseña</span>
+                        <div class="password-wrapper">
+                            <input 
+                                class="form-input password-input" 
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Ingresa tu contraseña"
+                                autocomplete="current-password"
+                                required
+                                aria-required="true"
+                            >
+                            <button 
+                                type="button"
+                                class="password-toggle"
+                                aria-label="Mostrar contraseña"
+                                onclick="togglePassword()"
+                            >
+                                <span class="material-symbols-outlined" id="password-icon">
+                                    visibility
+                                </span>
+                            </button>
+                        </div>
+                    </label>
+
+                    <!-- Login Button -->
+                    <button type="submit" class="login-button">
+                        <span class="button-text">Iniciar Sesión</span>
+                    </button>
+                </form>
+
+                <!-- Secondary Links -->
+                <nav class="secondary-links">
+                    <a class="link" href="#forgot-password">¿Olvidaste tu contraseña?</a>
+                    <p class="secondary-text">
+                        ¿No tienes cuenta? 
+                        <a class="link" href="#signup">Crea una aquí</a>
+                    </p>
+                </nav>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
