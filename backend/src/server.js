@@ -18,6 +18,8 @@ app.get('/', (req, res) => {
   res.send('Bienvenido a 8AM Cafe')
 });
 
+app.use('/api/usuarios', rutasUsuarios);
+
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 })
