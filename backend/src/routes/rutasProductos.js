@@ -19,4 +19,27 @@ router.get('/', (req, res) => {
   })
 })
 
+// READ por ID
+router.get('/:id', (req, res) => {
+  const ID = parseInt(req.params.id);
+  const SQL = `
+  SELECT * from producto
+  WHERE id_producto = ?;
+  `;
+
+  db.query(SQL, [ID], (err, result) => {
+    if(err) {
+      console.error('Error al obtener producto:', err);
+      return res.status(500).json({ 
+        error: 'Error interno del servidor',
+        detalle: err.message 
+      });
+    }
+
+    if(result.length == 0) return res.status(404).json({ error: 'Producto no encontrado' });
+    
+    res.json(result[0]);
+  })
+})
+
 module.exports = router; 
