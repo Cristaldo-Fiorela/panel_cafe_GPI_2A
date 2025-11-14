@@ -42,4 +42,18 @@ router.get('/:id', (req, res) => {
   })
 })
 
+/*
+
+  GET para productos ordenados por disponibles y por alfabetico.
+
+  POST 
+  crear producto
+
+  PUT
+  editar producto por ID
+
+  DELETE
+  borrar producto
+ */
+
 module.exports = router; 
