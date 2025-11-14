@@ -4,10 +4,10 @@ const port = 3000;
 
 // endpoints
 const rutasUsuarios = require('./routes/rutasUsuarios');
+const rutasRol = require('./routes/rutasRoles');
 // const rutasPedidos = require('');
 // const rutasProductos =  require('');
 // const rutasEstados = require('');
-// const rutasRol = require('');
 
 const app = express();
 
@@ -19,6 +19,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/usuarios', rutasUsuarios);
+app.use('/api/roles', rutasRol);
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
