@@ -43,15 +43,40 @@ router.get('/:id', (req, res) => {
     
     res.json(result[0]);
   })
-})
+});
+
+// CREATE
+router.post('/', async (req, res) => {
+  try {
+    const { nombre, descripcion, precio, imagen_url, stock } = req.body;
+
+    if (!nombre || !precio || !stock) {
+      return res.status(400).json({ 
+        error: 'Los campos nombre, precio y stock son requeridos' 
+      });
+    }
+
+    const SQL = `
+      INSERT INTO producto(nombre, descripcion, precio, imagen_url, stock)
+      VALUES(?, ?, ?, ?, ?)
+    `;
+
+    const [result] = await db.query(SQL, [nombre, descripcion, precio, imagen_url, stock]);
+
+    res.status(201).json({
+      message: 'Producto creado exitosamente',
+      id: result.insertId, // recupera el ID de la ultima operacion de insercion.
+      data: { nombre, descripcion, precio, imagen_url, stock }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ 
+      error: 'Error al crear producto' 
+    });
+  }
+});
 
 /*
-
-  GET para productos ordenados por disponibles y por alfabetico.
-
-  POST 
-  crear producto
-
   PUT
   editar producto por ID
 
