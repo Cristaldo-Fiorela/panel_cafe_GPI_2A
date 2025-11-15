@@ -4,7 +4,10 @@ const db = require('../config/sql_db');
 
 // READ
 router.get('/', (req, res) => {
-  const SQL = `SELECT * from producto`;
+  const SQL = `
+    SELECT * from producto
+    ORDER BY disponible DESC, nombre ASC
+  `;
 
   db.query(SQL, (err, results) => {
     if(err) {
