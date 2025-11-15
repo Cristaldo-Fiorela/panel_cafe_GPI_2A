@@ -48,27 +48,45 @@ router.get('/:id', (req, res) => {
 // CREATE
 router.post('/', async (req, res) => {
   try {
-    const { nombre, descripcion, precio, imagen_url, stock } = req.body;
+    const { nombre, descripcion, precio, imagen_url, stock, disponible } = req.body;
 
     if (!nombre || !precio || !stock) {
       return res.status(400).json({ 
         error: 'Los campos nombre, precio y stock son requeridos' 
       });
     }
-
+    
+    if(precio < 0 || stock < 0) {
+      return res.status(400).json({
+        error: 'El precio y stock no pueden ser negativos'
+      });
+    }
+    
     const SQL = `
-      INSERT INTO producto(nombre, descripcion, precio, imagen_url, stock)
+      INSERT INTO producto(nombre, descripcion, precio, imagen_url, stock, disponible)
       VALUES(?, ?, ?, ?, ?)
     `;
 
-    const [result] = await db.query(SQL, [nombre, descripcion, precio, imagen_url, stock]);
+    const [result] = await db.query(SQL, [
+      nombre, 
+      descripcion || null, 
+      precio, 
+      imagen_url || null, 
+      stock,
+      disponible !== undefined ? disponible : true // si disponible no es undefined usar el valor, de lo contrario poner false.
+    ]);
 
     res.status(201).json({
       message: 'Producto creado exitosamente',
       id: result.insertId, // recupera el ID de la ultima operacion de insercion.
-      data: { nombre, descripcion, precio, imagen_url, stock }
     });
   } catch (error) {
+    if(error.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({
+        error: 'Ya existe un producto con ese nombre'
+      })
+    }
+
     console.error(error);
     res.status(500).json({ 
       error: 'Error al crear producto' 
