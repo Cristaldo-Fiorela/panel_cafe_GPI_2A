@@ -101,7 +101,6 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, descripcion, precio, imagen_url, stock, disponible } = req.body;
 
     // se desestructura el array que viene para tomar el 1er objeto encontrado e ignorar el 2do que son los metadatos
     const [existe] = await db.query(
