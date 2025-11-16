@@ -131,6 +131,19 @@ router.put('/:id', async (req, res) => {
       })
     }
     
+    // VALIDACIONES
+    if(actualizar.precio !== undefined && actualizar.precio > 0) {
+      return res.status(400).json({ 
+        error: 'El precio no puede ser negativo' 
+      });
+    }
+
+    if(actualizar.stock !== undefined && actualizar.stock > 0) {
+      return res.status(400).json({ 
+        error: 'El stock no puede ser negativo' 
+      });
+    }
+    
     // QUERY SQL dinamico
     const columnas = Object.keys(actualizar).map( campo => `${campo} ?`);
     const nuevosValores = [...Object.values(actualizar), id_producto]
