@@ -143,7 +143,7 @@ router.put('/:id', async (req, res) => {
         error: 'El stock no puede ser negativo' 
       });
     }
-    
+
     // QUERY SQL dinamico
     const columnas = Object.keys(actualizar).map( campo => `${campo} ?`);
     const nuevosValores = [...Object.values(actualizar), id_producto]
@@ -175,11 +175,41 @@ router.put('/:id', async (req, res) => {
   }
 })
 
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
 
+    // verifica si existe
+    const [existe] = await db.query(
+      'SELECT id_producto, nombre FROM producto WHERE id_producto = ?',
+      [id]
+    );
+    
+    if (existe.length === 0) {
+      return res.status(404).json({ 
+        error: 'Producto no encontrado' 
+      });
+    }
 
-/*
-  DELETE
-  borrar producto
- */
+    // TODO: verificacion de que no se puede eliminar si esta en un pedido activo actualmente
+
+    const SQL = `
+      DELETE FROM producto
+      WHERE id_producto = ?
+    `
+    await db.query(SQL, [id]);
+
+    res.json({
+      message: `Producto ${existe[0].nombre} eliminado exitosamente`,
+      id_producto: id,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ 
+      error: 'Error al eliminar producto' 
+    });
+  }
+})
 
 module.exports = router; 
