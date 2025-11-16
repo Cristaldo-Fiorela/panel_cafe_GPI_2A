@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
   try {
     const { nombre, descripcion, precio, imagen_url, stock, disponible } = req.body;
 
-    if (!nombre || !precio || !stock) {
+    if (!nombre || !precio || stock === undefined) {
       return res.status(400).json({ 
         error: 'Los campos nombre, precio y stock son requeridos' 
       });
@@ -64,7 +64,7 @@ router.post('/', async (req, res) => {
     
     const SQL = `
       INSERT INTO producto(nombre, descripcion, precio, imagen_url, stock, disponible)
-      VALUES(?, ?, ?, ?, ?)
+      VALUES(?, ?, ?, ?, ?, ?)
     `;
 
     const [result] = await db.query(SQL, [
@@ -78,7 +78,7 @@ router.post('/', async (req, res) => {
 
     res.status(201).json({
       message: 'Producto creado exitosamente',
-      id: result.insertId, // recupera el ID de la ultima operacion de insercion.
+      id_producto: result.insertId, // recupera el ID de la ultima operacion de insercion.
     });
   } catch (error) {
     if(error.code === 'ER_DUP_ENTRY') {
