@@ -3,46 +3,49 @@ const router = express.Router();
 const db = require('../config/sql_db');
 
 // READ
-router.get('/', (req, res) => {
-  const SQL = `
-    SELECT * from producto
-    ORDER BY disponible DESC, nombre ASC
-  `;
+router.get('/', async (req, res) => {
+  try {
+    const SQL = `
+      SELECT * from producto
+      ORDER BY disponible DESC, nombre ASC
+    `;
 
-  db.query(SQL, (err, results) => {
-    if(err) {
-      console.error('Error al obtener productos:', err);
-      return res.status(500).json({ 
-        error: 'Error interno del servidor',
-        detalle: err.message 
-      });
-    }
+    const [results] = await db.query(SQL);
     
     res.json(results);
-  })
+  } catch (error) {
+    console.error('Error al obtener productos:', error);
+    res.status(500).json({ 
+      error: 'Error al obtener productos' 
+    });
+  }
 })
 
 // READ por ID
-router.get('/:id', (req, res) => {
-  const ID = parseInt(req.params.id);
-  const SQL = `
-  SELECT * from producto
-  WHERE id_producto = ?
-  `;
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const SQL = `
+    SELECT * from producto
+    WHERE id_producto = ?
+    `;
+    
+    const [result] = await db.query(SQL, [id]);
 
-  db.query(SQL, [ID], (err, result) => {
-    if(err) {
-      console.error('Error al obtener producto:', err);
-      return res.status(500).json({ 
-        error: 'Error interno del servidor',
-        detalle: err.message 
+    if(result.length === 0) {
+      return res.status(404).json({ 
+        error: 'Producto no encontrado' 
       });
     }
 
-    if(result.length == 0) return res.status(404).json({ error: 'Producto no encontrado' });
-    
     res.json(result[0]);
-  })
+
+  } catch (error) {
+    console.error('Error al obtener producto:', error);
+     res.status(500).json({ 
+      error: 'Error interno del servidor',
+    });
+  }
 });
 
 // CREATE
@@ -97,12 +100,12 @@ router.post('/', async (req, res) => {
 // UPDATE
 router.put('/:id', async (req, res) => {
   try {
-    const { id_producto } = req.params;
+    const { id } = req.params;
     const { nombre, descripcion, precio, imagen_url, stock, disponible } = req.body;
 
     // se desestructura el array que viene para tomar el 1er objeto encontrado e ignorar el 2do que son los metadatos
     const [existe] = await db.query(
-      'SELECT * from producto WHERE id_producto = ?', [id_producto]   
+      'SELECT * from producto WHERE id_producto = ?', [id]   
     );
 
     if(existe.length === 0) {
@@ -132,13 +135,13 @@ router.put('/:id', async (req, res) => {
     }
     
     // VALIDACIONES
-    if(actualizar.precio !== undefined && actualizar.precio > 0) {
+    if(actualizar.precio !== undefined && actualizar.precio < 0) {
       return res.status(400).json({ 
         error: 'El precio no puede ser negativo' 
       });
     }
 
-    if(actualizar.stock !== undefined && actualizar.stock > 0) {
+    if(actualizar.stock !== undefined && actualizar.stock < 0) {
       return res.status(400).json({ 
         error: 'El stock no puede ser negativo' 
       });
@@ -146,7 +149,7 @@ router.put('/:id', async (req, res) => {
 
     // QUERY SQL dinamico
     const columnas = Object.keys(actualizar).map( campo => `${campo} ?`);
-    const nuevosValores = [...Object.values(actualizar), id_producto]
+    const nuevosValores = [...Object.values(actualizar), id]
     const SQL = `
       UPDATE producto
       SET ${columnas.join(', ')}
@@ -157,7 +160,7 @@ router.put('/:id', async (req, res) => {
 
     res.json({
       message: 'Producto actualizado exitosamente',
-      id_producto: id_producto
+      id_producto: id
     });
 
   } catch (error) {
