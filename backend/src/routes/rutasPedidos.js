@@ -95,7 +95,6 @@ router.post('/', async(req, res) => {
   }
 })
 
-
 // READ
 router.get('/', async (req, res) => {
   try {
@@ -288,6 +287,31 @@ router.get('/:id', async (req, res) => {
 });
 
 // EDIT
+router.patch('/:id/estado', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { id_estado } = req.body;
+    
+    const SQL = `
+      UPDATE pedido
+      SET id_estado = ?
+      WHERE id_pedido = ?
+    `;
+    await db.query(SQL, [id_estado, id]);
+
+    res.json({
+      message: 'estado del pedido actualizado exitosamente',
+      id_pedido: id,
+      id_estado: id_estado
+    });
+    
+  } catch (error) {
+    console.error('Error al actualizar estado:', error);
+    res.status(500).json({
+      error: 'Error al actualizar estado del pedido'
+    });
+  }
+})
 
 // DELETE
 
