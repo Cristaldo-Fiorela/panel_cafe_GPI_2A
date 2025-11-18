@@ -153,6 +153,45 @@ router.get('/cancelados', async (req, res) => {
   }
 });
 
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const SQL = `
+    SELECT 
+      p.id_pedido, 
+      p.hora, 
+      p.fecha, 
+      pt.descripcion as detalle_producto,
+      p.id_estado,
+      es.descripcion as estado,
+      pp.cantidad,
+      pp.precio_unitario,
+      p.total,
+      u.id,
+      u.username
+    FROM pedido as p
+    INNER JOIN pedido_producto as pp
+    ON p.id_pedido = pp.id_pedido
+    INNER JOIN producto as pt
+    ON pt.id_producto = pp.id_producto
+    INNER JOIN estado as es
+    ON p.id_estado = es.id_estado
+    INNER JOIN usuario as u
+    ON p.id_usuario = u.id
+    WHERE p.id_pedido = ?
+    `;
+
+    const [result] = await db.query(SQL, [id]);
+
+    res.json(result);
+  } catch (error) {
+    console.error('Error al obtener pedidos:', error);
+    res.status(500).json({ 
+      error: 'Error al obtener productos' 
+    });
+  }
+});
+
 module.exports = router;
 
 /**
