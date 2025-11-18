@@ -331,31 +331,48 @@ router.patch('/:id/estado', async (req, res) => {
   }
 })
 
-// DELETE
+// DELETE - cambio de estado de pedido a cancelado (para no perder el historial)
+router.patch('/:id/cancelar', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // verificar existencia del pedido y su estado 
+    const [pedido] = await db.query(
+      'SELECT id_pedido, id_estado FROM pedido WHERE id_pedido = ?',
+      [id]
+    );
+
+    if (pedido.length === 0) {
+      return res.status(404).json({
+        error: 'Pedido no encontrado'
+      });
+    }
+
+    // Solo se puede cancelar si está Pendiente (id_estado = 1)
+    if (pedido[0].id_estado !== 1) {
+      return res.status(400).json({
+        error: 'Solo se pueden cancelar pedidos en estado Pendiente'
+      });
+    }
+
+    // cambia estado a Cancelado (id_estado = 5)
+    const SQL = `
+      UPDATE pedido SET id_estado = 5 WHERE id_pedido = ?
+    `;
+
+    await db.query(SQL, [id]);
+
+    res.json({
+      message: 'Pedido cancelado exitosamente',
+      id_pedido: id
+    });
+
+  } catch (error) {
+    console.error('Error al cancelar pedido:', error);
+    res.status(500).json({
+      error: 'Error al cancelar pedido'
+    });
+  }
+});
 
 module.exports = router;
-
-/**
-  Que tiene que mostrar pedidos:
-    - id_pedido
-    - hora
-    - fecha
-    - detalle
-    - estado
-    - id_estado
-    - cliente
-
-    GET de:
-    ////- pedidos activos (pendiente, en preparacion, listo) 1, 2, 3,
-    ////- pedidos entregados 4
-    ////- pedidos cancelados 5
-    ////- todos los pedidos (independientemente del estado)
-    ////- pedido por ID
-
-
-    PUT
-    cambiar el estado de un pedido por ID 9aca tmbn se puede cancelar)
-    
-    POST 
-    crear un nuevo pedido
- */
