@@ -6,7 +6,7 @@ const port = 3000;
 const rutasUsuarios = require('./routes/rutasUsuarios');
 const rutasRol = require('./routes/rutasRoles');
 const rutasProductos =  require('./routes/rutasProductos');
-// const rutasPedidos = require('');
+const rutasPedidos = require('./routes/rutasPedidos');
 // const rutasEstados = require('');
 
 const app = express();
@@ -21,6 +21,7 @@ app.get('/', (req, res) => {
 app.use('/api/usuarios', rutasUsuarios);
 app.use('/api/roles', rutasRol);
 app.use('/api/productos', rutasProductos);
+app.use('/api/pedidos', rutasPedidos);
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);

@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/sql_db');
 
-// TODO: CAMBIAR ASYNC AWAIT
-
 // READ
 router.get('/', async (req, res) => {
   try {
