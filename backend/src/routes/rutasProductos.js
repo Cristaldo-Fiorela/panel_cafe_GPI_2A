@@ -11,7 +11,6 @@ router.get('/', async (req, res) => {
     `;
 
     const [results] = await db.query(SQL);
-    
     res.json(results);
   } catch (error) {
     console.error('Error al obtener productos:', error);

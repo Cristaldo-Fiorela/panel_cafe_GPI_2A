@@ -2,44 +2,46 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/sql_db');
 
+// TODO: CAMBIAR ASYNC AWAIT
 
 // READ
-router.get('/', (req, res) => {
-  const SQL = `SELECT * from rol`;
+router.get('/', async (req, res) => {
+  try {
+    const SQL = `SELECT * from rol`;
 
-  db.query(SQL, (err, results) => {
-    if(err) {
-      console.error('Error al obtener roles:', err);
-      return res.status(500).json({ 
-        error: 'Error interno del servidor',
-        detalle: err.message 
-      });
-    }
-    
+    const [results] = await db.query(SQL);
     res.json(results);
-  })
+  } catch (error) {
+    console.error('Error al obtener roles:', err);
+    return res.status(500).json({ 
+      error: 'Error interno del servidor',
+    });
+  }
 })
 
-router.get('/:id', (req, res) => {
-  const ID = parseInt(req.params.id);
-  const SQL = `
-  SELECT * from rol
-  WHERE id_rol = ?;
-  `;
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const SQL = `
+      SELECT * from rol
+      WHERE id_rol = ?;
+    `;
 
-  db.query(SQL, [ID], (err, result) => {
-    if(err) {
-      console.error('Error al obtener rol:', err);
-      return res.status(500).json({ 
-        error: 'Error interno del servidor',
-        detalle: err.message 
+    const [result] = await db.query(SQL, [id]);
+
+    if(result.length == 0) {
+      return res.status(404).json({ 
+        error: 'Rol no encontrado' 
       });
     }
-
-    if(result.length == 0) return res.status(404).json({ error: 'Rol no encontrado' });
     
     res.json(result[0]);
-  })
+  } catch (error) {
+    console.error('Error al obtener rol:', err);
+    return res.status(500).json({ 
+      error: 'Error interno del servidor',
+    });
+  }
 })
 
 module.exports = router; 
