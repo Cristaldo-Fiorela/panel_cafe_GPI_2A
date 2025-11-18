@@ -2,6 +2,79 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/sql_db');
 
+// CREATE
+router.post('/', async(req, res) => {
+  // obtenemos una conexion especifica para la llamada nueva debido a que manejamos diferentes transacciones de tablas
+  const connection = await db.getConnection();
+
+  try {
+    const { total, id_usuario, hora, fecha, id_estado, productos } = req.body;
+
+    // garantiza que todas las transacciones se completen con exito o ninguna de ellas.
+    await connection.beginTransaction();
+
+    const SQL_pedido = `
+      INSERT INTO pedido(total, id_usuario, hora, fecha, id_estado)
+      VALUES (?,?,?, ?, ?)
+    `;
+
+    const [resultPedido] = await connection.query(SQL_pedido, [
+      total,
+      id_usuario,
+      hora,
+      fecha,
+      id_estado
+    ]);
+
+    // id de ultima insersion
+    const id_pedido = resultPedido.insertId;
+
+    // 2da transaccion
+    const SQL_pedido_producto = `
+      INSERT INTO pedido_producto(id_pedido, id_producto, cantidad, precio_unitario)
+      VALUES (?, ?, ?, ?)
+    `;
+
+    for (const producto of productos) {
+      await connection.query(SQL_pedido_producto, [
+        id_pedido,
+        producto.id_producto,
+        producto.cantidad,
+        producto.precio_unitario
+      ]);
+    }
+
+    // guarda ambas transacciones en la DB
+    await connection.commit();
+
+    res.status(201).json({
+      message: 'Pedido creado exitosamente',
+      id_pedido: id_pedido
+    });
+  } catch (error) {
+    // revertir cambios en caso de error
+    await connection.rollback();
+
+    // Error de FK (usuario o producto no existe)
+    if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+      return res.status(404).json({
+        error: 'Usuario o producto no encontrado'
+      });
+    }
+
+    console.error('Error al crear pedido:', error);
+    res.status(500).json({
+      error: 'Error al crear pedido'
+    });
+
+  } finally {
+    // independientemente del resultado, liberar la conexion usada.
+    connection.release();
+  }
+})
+
+
+// READ
 router.get('/', async (req, res) => {
   try {
     const SQL = `
@@ -191,6 +264,10 @@ router.get('/:id', async (req, res) => {
     });
   }
 });
+
+// EDIT
+
+// DELETE
 
 module.exports = router;
 
