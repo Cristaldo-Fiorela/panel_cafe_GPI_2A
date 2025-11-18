@@ -10,6 +10,28 @@ router.post('/', async(req, res) => {
   try {
     const { total, id_usuario, hora, fecha, id_estado, productos } = req.body;
 
+    // VALIDACIONES
+    if (!total || !id_usuario || !hora || !fecha || !id_estado || !productos) {
+      return res.status(400).json({
+        error: 'Faltan campos requeridos: total, id_usuario, hora, fecha, id_estado, productos'
+      });
+    }
+
+    if (!Array.isArray(productos) || productos.length === 0) {
+      return res.status(400).json({
+        error: 'Debe incluir al menos un producto'
+      });
+    }
+
+    // Validar que cada producto tenga los campos necesarios
+    for (const producto of productos) {
+      if (!producto.id_producto || !producto.cantidad || !producto.precio_unitario) {
+        return res.status(400).json({
+          error: 'Cada producto debe tener id_producto, cantidad y precio_unitario'
+        });
+      }
+    }
+
     // garantiza que todas las transacciones se completen con exito o ninguna de ellas.
     await connection.beginTransaction();
 
