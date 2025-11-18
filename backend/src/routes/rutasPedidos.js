@@ -291,7 +291,25 @@ router.patch('/:id/estado', async (req, res) => {
   try {
     const { id } = req.params;
     const { id_estado } = req.body;
-    
+
+    if(!id_estado) {
+      return res.status(400).json({
+        error: 'El campo id_estado es requerido'
+      });
+    }
+
+    // verificando que pedido existe
+    const [existe] = await db.query(
+      `SELECT id_pedido FROM pedido WHERE id_pedido = ?`,
+      [id]
+    );
+
+    if( existe.length === 0) {
+      return res.status(400).json({
+        error: 'Pedido no encontrado'
+      });
+    }
+
     const SQL = `
       UPDATE pedido
       SET id_estado = ?
