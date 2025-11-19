@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/sql_db');
+const { verificarToken, esAdmin } = require('../middleware/auth');
 
 // READ
 router.get('/', async (req, res) => {
