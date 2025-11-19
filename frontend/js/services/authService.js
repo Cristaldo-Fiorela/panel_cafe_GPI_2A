@@ -17,9 +17,9 @@ export const authService = {
         throw new Error(data.error || 'Error al iniciar sesión');
       }
 
-      // guardar en sessionStorage
-      sessionStorage.setItem('token', data.token);
-      sessionStorage.setItem('user', JSON.stringify(data.user));
+      // Guardar en localStorage (persiste entre pestañas y cierres)
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
 
       return data;
     } catch (error) {
@@ -27,6 +27,7 @@ export const authService = {
       throw error;
     }
   },
+
   register: async (userData) => {
     try {
       const response = await fetch(`${API_URL}/register`, {
@@ -43,9 +44,9 @@ export const authService = {
         throw new Error(data.error || 'Error al registrarse');
       }
 
-      // guardar en sessionStorage
-      sessionStorage.setItem('token', data.token);
-      sessionStorage.setItem('user', JSON.stringify(data.user));
+      // Guardar en localStorage
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
 
       return data;
     } catch (error) {
@@ -53,25 +54,41 @@ export const authService = {
       throw error;
     }
   },
+
   logout: () => {
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     window.location.href = '/login';
   },
+
   getToken: () => {
-    return sessionStorage.getItem('token');
+    return localStorage.getItem('token');
   },
+
   getUser: () => {
-    const user = sessionStorage.getItem('user');
+    const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   },
+
   isAuthenticated: () => {
-    return !!sessionStorage.getItem('token');
+    return !!localStorage.getItem('token');
   },
+
   isAdmin: () => {
     const user = authService.getUser();
     return user?.id_rol === 1;
   },
+
+  isBarista: () => {
+    const user = authService.getUser();
+    return user?.id_rol === 2;
+  },
+
+  isCliente: () => {
+    const user = authService.getUser();
+    return user?.id_rol === 3;
+  },
+
   getMe: async () => {
     try {
       const token = authService.getToken();
@@ -89,8 +106,15 @@ export const authService = {
       const data = await response.json();
 
       if (!response.ok) {
+        // Si el token expiró, hacer logout automático
+        if (response.status === 401) {
+          authService.logout();
+        }
         throw new Error(data.error || 'Error al obtener perfil');
       }
+
+      // Actualizar datos del usuario en localStorage
+      localStorage.setItem('user', JSON.stringify(data));
 
       return data;
     } catch (error) {
@@ -98,6 +122,7 @@ export const authService = {
       throw error;
     }
   },
+
   updateMe: async (userData) => {
     try {
       const token = authService.getToken();
@@ -118,11 +143,15 @@ export const authService = {
       const data = await response.json();
 
       if (!response.ok) {
+        // Si el token expiró, hacer logout automático
+        if (response.status === 401) {
+          authService.logout();
+        }
         throw new Error(data.error || 'Error al actualizar perfil');
       }
 
-      // actualiza los datos en sessionStorage
-      sessionStorage.setItem('user', JSON.stringify(data.user));
+      // Actualizar los datos en localStorage
+      localStorage.setItem('user', JSON.stringify(data.user));
 
       return data;
     } catch (error) {
