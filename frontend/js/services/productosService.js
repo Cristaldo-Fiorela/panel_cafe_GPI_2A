@@ -1,4 +1,3 @@
-// services/productosService.js
 import { authService } from './authService';
 
 const API_URL = 'http://localhost:3000/api/productos';

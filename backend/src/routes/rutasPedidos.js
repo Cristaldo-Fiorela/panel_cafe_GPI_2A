@@ -99,190 +99,259 @@ router.post('/', verificarToken, async(req, res) => {
 // READ
 router.get('/', verificarToken, async (req, res) => {
   try {
-    const SQL = `
-    SELECT 
-      p.id_pedido, 
-      p.hora, 
-      p.fecha, 
-      pt.descripcion as detalle_producto,
-      p.id_estado,
-      es.descripcion as estado,
-      pp.cantidad,
-      pp.precio_unitario,
-      p.total,
-      u.id,
-      u.username
-    FROM pedido as p
-    INNER JOIN pedido_producto as pp
-    ON p.id_pedido = pp.id_pedido
-    INNER JOIN producto as pt
-    ON pt.id_producto = pp.id_producto
-    INNER JOIN estado as es
-    ON p.id_estado = es.id_estado
-    INNER JOIN usuario as u
-    ON p.id_usuario = u.id
+    const SQL_pedidos = `
+      SELECT 
+        p.id_pedido, 
+        p.hora, 
+        p.fecha, 
+        p.id_estado,
+        es.descripcion as estado,
+        p.total,
+        u.id as id_usuario,
+        u.username
+      FROM pedido as p
+      INNER JOIN estado as es ON p.id_estado = es.id_estado
+      INNER JOIN usuario as u ON p.id_usuario = u.id
+      ORDER BY p.fecha DESC, p.hora DESC
     `;
 
-    const [results] = await db.query(SQL);
+    const [pedidos] = await db.query(SQL_pedidos);
 
-    res.json(results);
+    const SQL_productos = `
+      SELECT 
+        pp.id_pedido,
+        pt.id_producto,
+        pt.descripcion,
+        pp.cantidad,
+        pp.precio_unitario
+      FROM pedido_producto as pp
+      INNER JOIN producto as pt ON pt.id_producto = pp.id_producto
+    `;
+
+    const [productos] = await db.query(SQL_productos);
+
+    // agrupa productos con sus pedidos
+    const pedidosConProductos = pedidos.map(pedido => ({
+      ...pedido,
+      productos: productos.filter(prod => prod.id_pedido === pedido.id_pedido)
+    }));
+
+    res.json(pedidosConProductos);
+    
   } catch (error) {
     console.error('Error al obtener pedidos:', error);
     res.status(500).json({ 
-      error: 'Error al obtener productos' 
+      error: 'Error al obtener pedidos' 
     });
   }
 });
 
 router.get('/activos', verificarToken, esAdmin, async (req, res) => {
   try {
-    const SQL = `
-    SELECT 
-      p.id_pedido, 
-      p.hora, 
-      p.fecha, 
-      pt.descripcion as detalle_producto,
-      p.id_estado,
-      es.descripcion as estado,
-      pp.cantidad,
-      pp.precio_unitario,
-      p.total,
-      u.id,
-      u.username
-    FROM pedido as p
-    INNER JOIN pedido_producto as pp
-    ON p.id_pedido = pp.id_pedido
-    INNER JOIN producto as pt
-    ON pt.id_producto = pp.id_producto
-    INNER JOIN estado as es
-    ON p.id_estado = es.id_estado
-    INNER JOIN usuario as u
-    ON p.id_usuario = u.id
-    WHERE p.id_estado IN (1,2,3)
+    const SQL_pedidos = `
+      SELECT 
+        p.id_pedido, 
+        p.hora, 
+        p.fecha, 
+        p.id_estado,
+        es.descripcion as estado,
+        p.total,
+        u.id as id_usuario,
+        u.username
+      FROM pedido as p
+      INNER JOIN estado as es ON p.id_estado = es.id_estado
+      INNER JOIN usuario as u ON p.id_usuario = u.id
+      WHERE p.id_estado IN (1, 2, 3)
+      ORDER BY p.fecha DESC, p.hora DESC
     `;
 
-    const [results] = await db.query(SQL);
+    const [pedidos] = await db.query(SQL_pedidos);
 
-    res.json(results);
+    const SQL_productos = `
+      SELECT 
+        pp.id_pedido,
+        pt.id_producto,
+        pt.descripcion,
+        pp.cantidad,
+        pp.precio_unitario
+      FROM pedido_producto as pp
+      INNER JOIN producto as pt ON pt.id_producto = pp.id_producto
+      INNER JOIN pedido as p ON p.id_pedido = pp.id_pedido
+      WHERE p.id_estado IN (1, 2, 3)
+    `;
+
+    const [productos] = await db.query(SQL_productos);
+
+    const pedidosConProductos = pedidos.map(pedido => ({
+      ...pedido,
+      productos: productos.filter(prod => prod.id_pedido === pedido.id_pedido)
+    }));
+
+    res.json(pedidosConProductos);
+    
   } catch (error) {
-    console.error('Error al obtener pedidos:', error);
+    console.error('Error al obtener pedidos activos:', error);
     res.status(500).json({ 
-      error: 'Error al obtener productos' 
+      error: 'Error al obtener pedidos activos' 
     });
   }
 });
 
 router.get('/entregados', verificarToken, esAdmin, async (req, res) => {
   try {
-    const SQL = `
-    SELECT 
-      p.id_pedido, 
-      p.hora, 
-      p.fecha, 
-      pt.descripcion as detalle_producto,
-      p.id_estado,
-      es.descripcion as estado,
-      pp.cantidad,
-      pp.precio_unitario,
-      p.total,
-      u.id,
-      u.username
-    FROM pedido as p
-    INNER JOIN pedido_producto as pp
-    ON p.id_pedido = pp.id_pedido
-    INNER JOIN producto as pt
-    ON pt.id_producto = pp.id_producto
-    INNER JOIN estado as es
-    ON p.id_estado = es.id_estado
-    INNER JOIN usuario as u
-    ON p.id_usuario = u.id
-    WHERE p.id_estado IN (4)
+    const SQL_pedidos = `
+      SELECT 
+        p.id_pedido, 
+        p.hora, 
+        p.fecha, 
+        p.id_estado,
+        es.descripcion as estado,
+        p.total,
+        u.id as id_usuario,
+        u.username
+      FROM pedido as p
+      INNER JOIN estado as es ON p.id_estado = es.id_estado
+      INNER JOIN usuario as u ON p.id_usuario = u.id
+      WHERE p.id_estado IN (4)
+      ORDER BY p.fecha DESC, p.hora DESC
     `;
 
-    const [results] = await db.query(SQL);
+    const [pedidos] = await db.query(SQL_pedidos);
 
-    res.json(results);
+    const SQL_productos = `
+      SELECT 
+        pp.id_pedido,
+        pt.id_producto,
+        pt.descripcion,
+        pp.cantidad,
+        pp.precio_unitario
+      FROM pedido_producto as pp
+      INNER JOIN producto as pt ON pt.id_producto = pp.id_producto
+      INNER JOIN pedido as p ON p.id_pedido = pp.id_pedido
+      WHERE p.id_estado IN (4)
+    `;
+
+    const [productos] = await db.query(SQL_productos);
+
+    const pedidosConProductos = pedidos.map(pedido => ({
+      ...pedido,
+      productos: productos.filter(prod => prod.id_pedido === pedido.id_pedido)
+    }));
+
+    res.json(pedidosConProductos);
+    
   } catch (error) {
-    console.error('Error al obtener pedidos:', error);
+    console.error('Error al obtener pedidos entregados:', error);
     res.status(500).json({ 
-      error: 'Error al obtener productos' 
+      error: 'Error al obtener pedidos entregados' 
     });
   }
 });
 
 router.get('/cancelados', verificarToken, esAdmin, async (req, res) => {
   try {
-    const SQL = `
-    SELECT 
-      p.id_pedido, 
-      p.hora, 
-      p.fecha, 
-      pt.descripcion as detalle_producto,
-      p.id_estado,
-      es.descripcion as estado,
-      pp.cantidad,
-      pp.precio_unitario,
-      p.total,
-      u.id,
-      u.username
-    FROM pedido as p
-    INNER JOIN pedido_producto as pp
-    ON p.id_pedido = pp.id_pedido
-    INNER JOIN producto as pt
-    ON pt.id_producto = pp.id_producto
-    INNER JOIN estado as es
-    ON p.id_estado = es.id_estado
-    INNER JOIN usuario as u
-    ON p.id_usuario = u.id
-    WHERE p.id_estado IN (5)
+    const SQL_pedidos = `
+      SELECT 
+        p.id_pedido, 
+        p.hora, 
+        p.fecha, 
+        p.id_estado,
+        es.descripcion as estado,
+        p.total,
+        u.id as id_usuario,
+        u.username
+      FROM pedido as p
+      INNER JOIN estado as es ON p.id_estado = es.id_estado
+      INNER JOIN usuario as u ON p.id_usuario = u.id
+      WHERE p.id_estado IN (4)
+      ORDER BY p.fecha DESC, p.hora DESC
     `;
 
-    const [results] = await db.query(SQL);
+    const [pedidos] = await db.query(SQL_pedidos);
 
-    res.json(results);
+    const SQL_productos = `
+      SELECT 
+        pp.id_pedido,
+        pt.id_producto,
+        pt.descripcion,
+        pp.cantidad,
+        pp.precio_unitario
+      FROM pedido_producto as pp
+      INNER JOIN producto as pt ON pt.id_producto = pp.id_producto
+      INNER JOIN pedido as p ON p.id_pedido = pp.id_pedido
+      WHERE p.id_estado IN (4)
+    `;
+
+    const [productos] = await db.query(SQL_productos);
+
+    const pedidosConProductos = pedidos.map(pedido => ({
+      ...pedido,
+      productos: productos.filter(prod => prod.id_pedido === pedido.id_pedido)
+    }));
+
+    res.json(pedidosConProductos);
+    
   } catch (error) {
-    console.error('Error al obtener pedidos:', error);
+    console.error('Error al obtener pedidos cancelados:', error);
     res.status(500).json({ 
-      error: 'Error al obtener productos' 
+      error: 'Error al obtener pedidos cancelados' 
     });
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', verificarToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const SQL = `
-    SELECT 
-      p.id_pedido, 
-      p.hora, 
-      p.fecha, 
-      pt.descripcion as detalle_producto,
-      p.id_estado,
-      es.descripcion as estado,
-      pp.cantidad,
-      pp.precio_unitario,
-      p.total,
-      u.id,
-      u.username
-    FROM pedido as p
-    INNER JOIN pedido_producto as pp
-    ON p.id_pedido = pp.id_pedido
-    INNER JOIN producto as pt
-    ON pt.id_producto = pp.id_producto
-    INNER JOIN estado as es
-    ON p.id_estado = es.id_estado
-    INNER JOIN usuario as u
-    ON p.id_usuario = u.id
-    WHERE p.id_pedido = ?
+    
+    const SQL_pedido = `
+      SELECT 
+        p.id_pedido, 
+        p.hora, 
+        p.fecha, 
+        p.id_estado,
+        es.descripcion as estado,
+        p.total,
+        u.id as id_usuario,
+        u.username
+      FROM pedido as p
+      INNER JOIN estado as es ON p.id_estado = es.id_estado
+      INNER JOIN usuario as u ON p.id_usuario = u.id
+      WHERE p.id_pedido = ?
     `;
 
-    const [result] = await db.query(SQL, [id]);
+    const [pedidos] = await db.query(SQL_pedido, [id]);
 
-    res.json(result);
+    if (pedidos.length === 0) {
+      return res.status(404).json({
+        error: 'Pedido no encontrado'
+      });
+    }
+
+    const SQL_productos = `
+      SELECT 
+        pp.id_pedido,
+        pt.id_producto,
+        pt.descripcion,
+        pp.cantidad,
+        pp.precio_unitario
+      FROM pedido_producto as pp
+      INNER JOIN producto as pt ON pt.id_producto = pp.id_producto
+      WHERE pp.id_pedido = ?
+    `;
+
+    const [productos] = await db.query(SQL_productos, [id]);
+
+    const pedidoCompleto = {
+      ...pedidos[0],
+      productos: productos
+    };
+
+    res.json(pedidoCompleto);
+    
   } catch (error) {
-    console.error('Error al obtener pedidos:', error);
+    console.error('Error al obtener pedido:', error);
     res.status(500).json({ 
-      error: 'Error al obtener productos' 
+      error: 'Error al obtener pedido' 
     });
   }
 });
