@@ -84,7 +84,6 @@ router.post('/register', async (req, res) => {
         id: result.insertId,
         username,
         email,
-        rol: 'cliente'
       }
     });
     
