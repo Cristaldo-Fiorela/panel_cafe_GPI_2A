@@ -167,4 +167,52 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// // ⚠️ RUTA TEMPORAL - BORRAR DESPUÉS DE CREAR EL ADMIN 
+// router.post('/crear-primer-admin', async (req, res) => {
+//   try {
+//     // Verificar que no haya admins ya
+//     const [admins] = await db.query(
+//       'SELECT COUNT(*) as total FROM usuario WHERE id_rol = 1'
+//     );
+    
+//     if (admins[0].total > 0) {
+//       return res.status(403).json({ 
+//         error: 'Ya existe un administrador. Esta ruta está deshabilitada.' 
+//       });
+//     }
+    
+//     const { username, password, email } = req.body;
+    
+//     if (!username || !password || !email) {
+//       return res.status(400).json({ 
+//         error: 'Todos los campos son obligatorios' 
+//       });
+//     }
+    
+//     const salt = await bcrypt.genSalt(10);
+//     const hashedPassword = await bcrypt.hash(password, salt);
+    
+//     const [result] = await db.query(`
+//       INSERT INTO usuario (username, password, email, id_rol) 
+//       VALUES (?, ?, ?, 1)
+//     `, [username, hashedPassword, email]);
+    
+//     const token = jwt.sign(
+//       { id: result.insertId, username, id_rol: 1 },
+//       JWT_SECRET,
+//       { expiresIn: JWT_EXPIRES_IN }
+//     );
+    
+//     res.status(201).json({
+//       message: '🎉 Primer administrador creado. ELIMINA ESTA RUTA AHORA.',
+//       token,
+//       user: { id: result.insertId, username, email, rol: 'admin' }
+//     });
+    
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Error al crear administrador' });
+//   }
+// });
+
 module.exports = router;
