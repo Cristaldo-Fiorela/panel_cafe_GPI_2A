@@ -49,7 +49,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // CREATE
-router.post('/', async (req, res) => {
+router.post('/', verificarToken, esAdmin, async (req, res) => {
   try {
     const { nombre, descripcion, precio, imagen_url, stock, disponible } = req.body;
 
@@ -98,7 +98,7 @@ router.post('/', async (req, res) => {
 });
 
 // UPDATE
-router.put('/:id', async (req, res) => {
+router.put('/:id', verificarToken, esAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -177,7 +177,8 @@ router.put('/:id', async (req, res) => {
   }
 })
 
-router.delete('/:id', async (req, res) => {
+// DELETE
+router.delete('/:id', verificarToken, esAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 

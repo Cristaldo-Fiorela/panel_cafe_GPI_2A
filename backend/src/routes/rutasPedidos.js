@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const { verificarToken, esAdmin } = require('../middleware/auth');
 const db = require('../config/sql_db');
 
 // CREATE
-router.post('/', async(req, res) => {
+router.post('/', verificarToken, async(req, res) => {
   // obtenemos una conexion especifica para la llamada nueva debido a que manejamos diferentes transacciones de tablas
   const connection = await db.getConnection();
 
@@ -96,7 +97,7 @@ router.post('/', async(req, res) => {
 })
 
 // READ
-router.get('/', async (req, res) => {
+router.get('/', verificarToken, async (req, res) => {
   try {
     const SQL = `
     SELECT 
@@ -133,7 +134,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/activos', async (req, res) => {
+router.get('/activos', verificarToken, esAdmin, async (req, res) => {
   try {
     const SQL = `
     SELECT 
@@ -171,7 +172,7 @@ router.get('/activos', async (req, res) => {
   }
 });
 
-router.get('/entregados', async (req, res) => {
+router.get('/entregados', verificarToken, esAdmin, async (req, res) => {
   try {
     const SQL = `
     SELECT 
@@ -209,7 +210,7 @@ router.get('/entregados', async (req, res) => {
   }
 });
 
-router.get('/cancelados', async (req, res) => {
+router.get('/cancelados', verificarToken, esAdmin, async (req, res) => {
   try {
     const SQL = `
     SELECT 
@@ -287,7 +288,8 @@ router.get('/:id', async (req, res) => {
 });
 
 // EDIT
-router.patch('/:id/estado', async (req, res) => {
+// cambia solo el estado del pedido
+router.patch('/:id/estado', verificarToken, esAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { id_estado } = req.body;
@@ -332,7 +334,8 @@ router.patch('/:id/estado', async (req, res) => {
 })
 
 // DELETE - cambio de estado de pedido a cancelado (para no perder el historial)
-router.patch('/:id/cancelar', async (req, res) => {
+// lo pueden usar tanto admin, barista o cliente
+router.patch('/:id/cancelar', verificarToken, async (req, res) => {
   try {
     const { id } = req.params;
 
