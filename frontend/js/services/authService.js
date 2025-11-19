@@ -17,9 +17,9 @@ export const authService = {
         throw new Error(data.error || 'Error al iniciar sesión');
       }
 
-      // Guardar en localStorage (persiste entre pestañas y cierres)
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      // Guardar en sessionStorage
+      sessionStorage.setItem('token', data.token);
+      sessionStorage.setItem('user', JSON.stringify(data.user));
 
       return data;
     } catch (error) {
@@ -44,9 +44,9 @@ export const authService = {
         throw new Error(data.error || 'Error al registrarse');
       }
 
-      // Guardar en localStorage
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      // Guardar en sessionStorage
+      sessionStorage.setItem('token', data.token);
+      sessionStorage.setItem('user', JSON.stringify(data.user));
 
       return data;
     } catch (error) {
@@ -56,22 +56,22 @@ export const authService = {
   },
 
   logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
     window.location.href = '/login';
   },
 
   getToken: () => {
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
   },
 
   getUser: () => {
-    const user = localStorage.getItem('user');
+    const user = sessionStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   },
 
   isAuthenticated: () => {
-    return !!localStorage.getItem('token');
+    return !!sessionStorage.getItem('token');
   },
 
   isAdmin: () => {
@@ -113,8 +113,8 @@ export const authService = {
         throw new Error(data.error || 'Error al obtener perfil');
       }
 
-      // Actualizar datos del usuario en localStorage
-      localStorage.setItem('user', JSON.stringify(data));
+      // Actualizar datos del usuario en sessionStorage
+      sessionStorage.setItem('user', JSON.stringify(data));
 
       return data;
     } catch (error) {
@@ -150,8 +150,8 @@ export const authService = {
         throw new Error(data.error || 'Error al actualizar perfil');
       }
 
-      // Actualizar los datos en localStorage
-      localStorage.setItem('user', JSON.stringify(data.user));
+      // Actualizar los datos en sessionStorage
+      sessionStorage.setItem('user', JSON.stringify(data.user));
 
       return data;
     } catch (error) {
