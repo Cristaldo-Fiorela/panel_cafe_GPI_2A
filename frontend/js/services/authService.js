@@ -58,7 +58,7 @@ export const authService = {
   logout: () => {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('user');
-    window.location.href = '/login';
+    window.location.href = '/frontend/pages/login.html';
   },
 
   getToken: () => {

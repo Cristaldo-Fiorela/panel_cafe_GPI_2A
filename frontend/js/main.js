@@ -8,10 +8,50 @@ const productsContainer = document.querySelector('.products-grid');
 const cartItemsContainer = document.querySelector('.cart-items');
 const confirmOrderButton = document.querySelector('.confirm-btn');
 const totalOrderElement = document.querySelector('.order-totals .total-row.final span:last-child');
+const userMenu = document.querySelector('.user-menu');
 
 // VARIABLES 
 let shoppingCart = [];
 let productsAvailable = [];
+
+function renderAuthUI() {
+  const user = authService.getUser();
+
+  if (user) {
+    // Usuario logueado - mostrar menú
+    userMenu.innerHTML = `
+      <button class="user-button" aria-label="Abrir menú de usuario" aria-haspopup="true">
+        <span class="user-name">${user.username}</span>
+        <div class="user-avatar" role="img" aria-label="Foto de perfil de ${user.username}"
+          style='background-image: url("https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=d46211&color=fff");'>
+        </div>
+      </button>
+      <div class="user-dropdown" role="menu">
+        <a href="/perfil.html" class="dropdown-link" role="menuitem">Mi Perfil</a>
+        <a href="/pedidos.html" class="dropdown-link" role="menuitem">Historial de Pedidos</a>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-link danger logout-btn" role="menuitem">Cerrar Sesión</button>
+      </div>
+    `;
+
+    // Event listener para logout
+    const logoutBtn = userMenu.querySelector('.logout-btn');
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+        authService.logout();
+      }
+    });
+
+  } else {
+    userMenu.innerHTML = `
+      <a href="/frontend/pages/login.html" class="login-btn">
+        <span>Iniciar Sesión</span>
+      </a>
+    `;
+  }
+}
+
 
 function addToCart(producto) {
   const itemAlreadyExist = shoppingCart.find(item => item.id_producto === producto.id_producto);
@@ -274,6 +314,7 @@ confirmOrderButton.addEventListener('click', createOrder);
 
 // ============= INICIALIZACIÓN =============
 document.addEventListener('DOMContentLoaded', () => {
+  renderAuthUI();
   getProducts();
   loadCartSS();
 });

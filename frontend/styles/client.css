@@ -486,6 +486,34 @@ body {
   top: 5rem;
 }
 
+/* BOTON DE LOGIN */
+.login-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background-color: var(--primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.login-btn:hover {
+  opacity: 0.9;
+}
+
+.logout-btn {
+  width: 100%;
+  text-align: left;
+  background: none;
+  cursor: pointer;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
 
 @media (min-width: 1024px) {
   .content-grid {
