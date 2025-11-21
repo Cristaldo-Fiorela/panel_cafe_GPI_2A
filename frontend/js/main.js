@@ -10,10 +10,10 @@ const cartItemsContainer = document.querySelector('.cart-items');
 const confirmOrderButton = document.querySelector('.confirm-btn');
 const totalOrderElement = document.querySelector('.order-totals .total-row.final span:last-child');
 const userMenu = document.querySelector('.user-menu');
-console.log(userMenu);
 
 // FORMS
-const loginForm = document.getElementById('login')
+const loginForm = document.getElementById('login');
+const registerForm = document.getElementById('register');
 
 // VARIABLES 
 let shoppingCart = [];
@@ -23,7 +23,7 @@ let estadosDisponibles = [];
 // ADMIN VAR
 let pedidosActivos = [];
 let todosPedidos = [];
-let vistaActual = 'activos';
+let vistaActual = '';
 
 
 function renderAuthUI() {
@@ -407,6 +407,52 @@ loginForm?.addEventListener('submit', async (e) => {
 
 });
 
+// REGISTER 
+registerForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  // datos del form
+  const formData = new FormData(e.target);
+  const username = formData.get('username');
+  const email = formData.get('email');
+  const password = formData.get('password');
+
+  if (!username || !password || !email) {
+    alert('Por favor, completa todos los campos');
+    return;
+  }
+
+  const submitButton = e.target.querySelector('button[type="submit"]');
+
+  try {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Registrando...';
+ 
+    const response = await authService.register({
+      username: username,
+      password: password,
+      email: email
+    });
+
+    if(response) {
+      window.location.href = '/frontend/pages/login.html';
+      alert('Usuario registrado con exito');
+    }
+
+  } catch (error) {
+    console.error('Error al crear usuario:', error);
+    alert(error.message || 'Error al crear usuario. Por favor, intenta nuevamente.');
+    
+    // Rehabilitar el botón
+    const submitButton = e.target.querySelector('button[type="submit"]');
+    submitButton.disabled = false;
+    submitButton.textContent = 'Crear Cuenta';
+    
+    // por seguridad
+    document.getElementById('password').value = '';
+  }
+});
+
 // ================ ADMIN =======================
 async function getEstados() {
   try {
@@ -503,7 +549,7 @@ function renderUIRowOrder(pedido) {
       <td>${pedido.nombre_cliente || 'Cliente'}</td>
       <td>${detalle}</td>
       <td>
-        <span class="status-badge ${estadoInfo.clase}">${estadoInfo.texto}</span>
+        <span class="status-badge ${estadoInfo.clase}">${pedido.estado ?? 'Sin Empezar'}</span>
       </td>
       <td>
         ${getBtnAction(pedido)}
@@ -684,6 +730,7 @@ async function adminPanel() {
   refreshOrders();
 }
 
+console.log(vistaActual);
 // ============= INICIALIZACIÓN =============
 document.addEventListener('DOMContentLoaded', () => {
   const page = window.location.pathname;

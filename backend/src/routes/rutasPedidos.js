@@ -122,6 +122,7 @@ router.get('/', verificarToken, async (req, res) => {
         pp.id_pedido,
         pt.id_producto,
         pt.descripcion,
+        pt.nombre,
         pp.cantidad,
         pp.precio_unitario
       FROM pedido_producto as pp
@@ -173,6 +174,7 @@ router.get('/activos', verificarToken, esAdmin, async (req, res) => {
         pt.id_producto,
         pt.descripcion,
         pp.cantidad,
+        pt.nombre,
         pp.precio_unitario
       FROM pedido_producto as pp
       INNER JOIN producto as pt ON pt.id_producto = pp.id_producto
