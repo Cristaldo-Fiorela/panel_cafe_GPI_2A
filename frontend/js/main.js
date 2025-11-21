@@ -546,7 +546,7 @@ function renderUIRowOrder(pedido) {
       <td>#${pedido.id_pedido}</td>
       <td>${formatHour(pedido.hora)}</td>
       <td>${formatDate(pedido.fecha)}</td>
-      <td>${pedido.nombre_cliente || 'Cliente'}</td>
+      <td>${pedido.username || 'Cliente'}</td>
       <td>${detalle}</td>
       <td>
         <span class="status-badge ${estadoInfo.clase}">${pedido.estado ?? 'Sin Empezar'}</span>
