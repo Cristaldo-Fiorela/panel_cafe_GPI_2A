@@ -61,7 +61,6 @@ body {
 .logo {
   width: 40px;
   height: 40px;
-  background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCsOB34nI-Zu76HpFGOIhjaTT-qP04QuyvqM_ImibOvudZZJ1GkPvPetLmy9H-pLfzCOS08l8BxQJBzPx6At61Maex3nscHaOHEKe6oF9w9ZpYTciLzE6cY-IM5XGwi__K8QMTFO5fE4v5l2Kz651b8EfFuTlIGt2jlK-52ajnaLK9rFL1_qUlCJclJ4hsHcv5TpZ8PwV8zTjXRUm_e89TSq-dcPdh07Ve4BszAgxx6O6UaxETyh9JDlkzLo9OPcP9jPiyGWJ95J6o8");
   background-size: cover;
   background-position: center;
   border-radius: 50%;
@@ -392,6 +391,87 @@ td:last-child {
   background-color: var(--gray-200);
   color: var(--gray-400);
   cursor: not-allowed;
+}
+
+/* User Menu */
+.user-menu {
+  position: relative;
+}
+
+.user-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+  background-color: transparent;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.user-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.user-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-light);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+}
+
+.user-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  width: 192px;
+  background-color: var(--card-light);
+  border: 1px solid var(--border-light);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.user-menu:hover .user-dropdown {
+  opacity: 1;
+  visibility: visible;
+}
+
+.dropdown-link {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.dropdown-link:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: var(--border-light);
+  margin: 0.25rem 0;
+}
+
+.dropdown-link.danger {
+  color: #dc2626;
+}
+
+.dropdown-link.danger:hover {
+  background-color: rgba(220, 38, 38, 0.1);
 }
 
 /* Responsive */

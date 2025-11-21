@@ -10,6 +10,7 @@ const rutasRol = require('./routes/rutasRoles');
 const rutasProductos =  require('./routes/rutasProductos');
 const rutasPedidos = require('./routes/rutasPedidos');
 const rutasAuth = require('./routes/rutasAuth');
+const rutasEstados = require('./routes/rutasEstados');
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use('/api/pedidos', rutasPedidos); // GETS por estados, EDIT para admin
 // RUTAS ADMIN
 app.use('/api/usuarios', verificarToken, esAdmin, rutasUsuarios);
 app.use('/api/roles', verificarToken, esAdmin, rutasRol);
+app.use('/api/estados', verificarToken, esAdmin, rutasEstados);
 
 
 app.listen(port, () => {

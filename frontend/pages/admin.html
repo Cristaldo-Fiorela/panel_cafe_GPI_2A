@@ -5,9 +5,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description"
-    content="Panel de administración para gestionar órdenes de café en tiempo real en The Coffee House" />
+    content="Panel de administración para gestionar órdenes de café en tiempo real en 8AM Café" />
   <meta name="keywords" content="café, administración, órdenes, panel, gestión" />
-  <title>Panel de Administración - The Coffee House</title>
+  <title>Panel de Administración - 8AM Café</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
@@ -21,29 +21,21 @@
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
       <header class="sidebar-header">
-        <div class="logo" role="img" aria-label="Logo de The Coffee House"></div>
+        <span class="material-symbols-outlined logo" style="font-size: 48px; color: #d46211;">coffee</span>
         <div class="sidebar-title">
-          <h1>The Coffee House</h1>
+          <h1>8AM Café</h1>
           <p class="sidebar-subtitle">Admin Panel</p>
         </div>
       </header>
 
       <nav aria-label="Navegación principal">
-        <a href="#" class="nav-link active" aria-current="page">
+        <a href="#" class="nav-link active" data-view="activos" aria-current="page">
           <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
           <span>Dashboard</span>
         </a>
-        <a href="#" class="nav-link">
+        <a href="#" class="nav-link" data-view="activos">
           <span class="material-symbols-outlined" aria-hidden="true">receipt_long</span>
-          <span>Órdenes</span>
-        </a>
-        <a href="#" class="nav-link">
-          <span class="material-symbols-outlined" aria-hidden="true">restaurant_menu</span>
-          <span>Menú</span>
-        </a>
-        <a href="#" class="nav-link">
-          <span class="material-symbols-outlined" aria-hidden="true">group</span>
-          <span>Clientes</span>
+          <span>Órdenes Activas</span>
         </a>
       </nav>
     </aside>
@@ -60,10 +52,10 @@
               en tiempo real.
             </p>
           </div>
-          <button class="logout-btn" aria-label="Cerrar sesión">
-            <span class="material-symbols-outlined" aria-hidden="true">logout</span>
-            <span>Cerrar Sesión</span>
-          </button>
+        
+          <div class="user-menu" aria-label="Menú de usuario">
+            <!-- boton de login o usuario logeado -->
+          </div>
         </header>
 
         <!-- Statistics -->
@@ -72,8 +64,8 @@
             <h2 class="stat-label">
               Total de Pedidos Pendientes
             </h2>
-            <p class="stat-value">12</p>
-            <p class="stat-change">+3.2% vs ayer</p>
+            <p class="stat-value">0</p>
+            <p class="stat-change">Actualizando...</p>
           </article>
         </section>
 
@@ -84,12 +76,6 @@
               <h2 id="orders-heading">Órdenes Activas</h2>
               <div class="filters">
                 <div class="filter-wrapper">
-                  <label for="date-filter" class="sr-only">Filtrar por fecha</label>
-                  <input id="date-filter" class="filter-input" type="date" value="2023-10-25"
-                    aria-label="Seleccionar fecha" />
-                  <span class="material-symbols-outlined filter-icon" aria-hidden="true">calendar_today</span>
-                </div>
-                <div class="filter-wrapper">
                   <label for="status-filter" class="sr-only">Filtrar por estado</label>
                   <select id="status-filter" class="filter-select" aria-label="Seleccionar estado">
                     <option>Todos los estados</option>
@@ -97,6 +83,7 @@
                     <option>En preparación</option>
                     <option>Listo</option>
                     <option>Entregado</option>
+                    <option>Cancelado</option>
                   </select>
                   <span class="material-symbols-outlined select-icon" aria-hidden="true">expand_more</span>
                 </div>
@@ -119,63 +106,8 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>#1024</td>
-                  <td>10:35 AM</td>
-                  <td>25/10/2023</td>
-                  <td>Ana Pérez</td>
-                  <td>1x Latte, 1x Croissant</td>
-                  <td>
-                    <span class="status-badge status-pending">Pendiente</span>
-                  </td>
-                  <td>
-                    <button class="action-btn btn-prep" aria-label="Marcar pedido #1024 en preparación">
-                      Marcar en Preparación
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#1023</td>
-                  <td>10:32 AM</td>
-                  <td>25/10/2023</td>
-                  <td>Carlos Gómez</td>
-                  <td>2x Americano</td>
-                  <td>
-                    <span class="status-badge status-in-prep">En preparación</span>
-                  </td>
-                  <td>
-                    <button class="action-btn btn-ready" aria-label="Marcar pedido #1023 como listo">
-                      Marcar como Listo
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#1022</td>
-                  <td>10:28 AM</td>
-                  <td>25/10/2023</td>
-                  <td>Lucía Fernández</td>
-                  <td>1x Capuccino</td>
-                  <td>
-                    <span class="status-badge status-ready">Listo</span>
-                  </td>
-                  <td>
-                    <button class="action-btn btn-delivered" aria-label="Marcar pedido #1022 como entregado">
-                      Marcar Entregado
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#1021</td>
-                  <td>10:25 AM</td>
-                  <td>25/10/2023</td>
-                  <td>Javier Morales</td>
-                  <td>1x Espresso, 1x Muffin</td>
-                  <td>
-                    <span class="status-badge status-delivered">Entregado</span>
-                  </td>
-                  <td>
-                    <button class="action-btn btn-disabled" disabled aria-label="Pedido #1021 completado">
-                      Completado
-                    </button>
+                  <td colspan="7" style="text-align: center; padding: 2rem;">
+                    Cargando pedidos...
                   </td>
                 </tr>
               </tbody>
@@ -185,6 +117,8 @@
       </div>
     </main>
   </div>
+  
+  <script src="../js/main.js" type="module"></script>
 </body>
 
 </html>

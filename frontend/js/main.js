@@ -1,8 +1,8 @@
 // SERVICIOS
 import {  productosServices } from './services/productosService.js';
 import { pedidosServices } from './services/pedidosService.js';
+import { estadosServices } from './services/estadosService.js';
 import { authService } from './services/authService.js';
-import { usuariosServices } from './services/usuariosService.js';
 
 // DOM containers
 const productsContainer = document.querySelector('.products-grid');
@@ -10,6 +10,7 @@ const cartItemsContainer = document.querySelector('.cart-items');
 const confirmOrderButton = document.querySelector('.confirm-btn');
 const totalOrderElement = document.querySelector('.order-totals .total-row.final span:last-child');
 const userMenu = document.querySelector('.user-menu');
+console.log(userMenu);
 
 // FORMS
 const loginForm = document.getElementById('login')
@@ -17,6 +18,13 @@ const loginForm = document.getElementById('login')
 // VARIABLES 
 let shoppingCart = [];
 let productsAvailable = [];
+let estadosDisponibles = [];
+
+// ADMIN VAR
+let pedidosActivos = [];
+let todosPedidos = [];
+let vistaActual = 'activos';
+
 
 function renderAuthUI() {
   const user = authService.getUser();
@@ -56,6 +64,33 @@ function renderAuthUI() {
   }
 }
 
+function protectAdminRoute() {
+  if (!authService.isAuthenticated()) {
+    window.location.href = '/frontend/pages/login.html';
+    return;
+  }
+
+  if (!authService.isAdmin() && !authService.isBarista()) {
+    alert('No tienes permisos para acceder a esta página');
+    window.location.href = '/frontend/index.html';
+    return;
+  }
+}
+
+function formatDate(fecha) {
+  const date = new Date(fecha);
+  return date.toLocaleDateString('es-AR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+}
+
+function formatHour(hora) {
+  return hora.substring(0, 5);
+}
+
+// ============= INDEX  ==================
 
 function addToCart(producto) {
   const itemAlreadyExist = shoppingCart.find(item => item.id_producto === producto.id_producto);
@@ -317,9 +352,7 @@ cartItemsContainer?.addEventListener('click', (e) => {
 // Confirmar pedido
 confirmOrderButton?.addEventListener('click', createOrder);
 
-
-// ================ LOGIN ===================
-
+// LOGIN
 loginForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -374,9 +407,283 @@ loginForm?.addEventListener('submit', async (e) => {
 
 });
 
-function loginUser() {
-  const login = authService.login();
+// ================ ADMIN =======================
+async function getEstados() {
+  try {
+    estadosDisponibles = await estadosServices.getAll();
+  } catch (error) {
+    console.error('Error al cargar estados desde backend:', error);
+    alert('Error al cargar los estados. Por favor, recarga la página.');
+    estadosDisponibles = [];
+  }
 }
+
+function getEstadosInfo(idEstado) {
+  const estado = estadosDisponibles.find(e => e.id_estado === idEstado);
+  
+  // ! clases de css para cada estado
+  const mapeoClases = {
+    'Pendiente': 'status-pending',
+    'En preparación': 'status-in-prep',
+    'En Preparación': 'status-in-prep',
+    'Listo': 'status-ready',
+    'Entregado': 'status-delivered',
+    'Entregada': 'status-delivered',
+    'Cancelado': 'status-cancelled',
+    'Cancelada': 'status-cancelled'
+  };
+  
+  if (estado) {
+    return {
+      texto: estado.nombre,
+      clase: mapeoClases[estado.nombre] || 'status-pending'
+    };
+  }
+  
+  // Fallback si no se encuentra el estado
+  return { texto: 'Desconocido', clase: 'status-pending' };
+}
+
+function getBtnAction(pedido) {
+  const { id_pedido, id_estado } = pedido;
+  
+  switch(id_estado) {
+    case 1: // Pendiente
+      return `
+        <button class="action-btn btn-prep" data-pedido-id="${id_pedido}" data-nuevo-estado="2">
+          Marcar en Preparación
+        </button>
+      `;
+    case 2: // En preparación
+      return `
+        <button class="action-btn btn-ready" data-pedido-id="${id_pedido}" data-nuevo-estado="3">
+          Marcar como Listo
+        </button>
+      `;
+    case 3: // Listo
+      return `
+        <button class="action-btn btn-delivered" data-pedido-id="${id_pedido}" data-nuevo-estado="4">
+          Marcar Entregado
+        </button>
+      `;
+    case 4: // Entregado
+      return `
+        <button class="action-btn btn-disabled" disabled>
+          Completado
+        </button>
+      `;
+    case 5: // Cancelado
+      return `
+        <button class="action-btn btn-disabled" disabled>
+          Cancelado
+        </button>
+      `;
+    default:
+      return `<button class="action-btn btn-disabled" disabled>-</button>`;
+  }
+}
+
+function getOrderDetail(productos) {
+  if (!productos || productos.length === 0) {
+    return 'Sin productos';
+  }
+  
+  return productos.map(p => `${p.cantidad}x ${p.nombre}`).join(', ');
+}
+
+function renderUIRowOrder(pedido) {
+  const estadoInfo = getEstadosInfo(pedido.id_estado);
+  const detalle = getOrderDetail(pedido.productos);
+  
+  return `
+    <tr>
+      <td>#${pedido.id_pedido}</td>
+      <td>${formatHour(pedido.hora)}</td>
+      <td>${formatDate(pedido.fecha)}</td>
+      <td>${pedido.nombre_cliente || 'Cliente'}</td>
+      <td>${detalle}</td>
+      <td>
+        <span class="status-badge ${estadoInfo.clase}">${estadoInfo.texto}</span>
+      </td>
+      <td>
+        ${getBtnAction(pedido)}
+      </td>
+    </tr>
+  `;
+}
+
+function renderOrdersTable(pedidos) {
+  const tbody = document.querySelector('.table-wrapper tbody');
+  
+  if (!tbody) return;
+  
+  if (pedidos.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align: center; padding: 2rem;">
+          No hay pedidos para mostrar
+        </td>
+      </tr>
+    `;
+    return;
+  }
+  
+  tbody.innerHTML = pedidos.map(pedido => renderUIRowOrder(pedido)).join('');
+}
+
+function updateStats(pedidos) {
+  const statValue = document.querySelector('.stat-value');
+  
+  if (!statValue) return;
+  
+  // contar pedidos pendientes
+  const pendientes = pedidos.filter(p => p.id_estado === 1).length;
+  statValue.textContent = pendientes;
+}
+
+async function getOrders() {
+  try {
+    if (vistaActual === 'activos') {
+      pedidosActivos = await pedidosServices.getActivos();
+      renderOrdersTable(pedidosActivos);
+      updateStats(pedidosActivos);
+    } else {
+      todosPedidos = await pedidosServices.getAll();
+      renderOrdersTable(todosPedidos);
+      updateStats(todosPedidos);
+    }
+  } catch (error) {
+    console.error('Error al cargar pedidos:', error);
+    alert('Error al cargar los pedidos: ' + error.message);
+  }
+}
+
+async function changeOrderEstado(idPedido, nuevoEstado) {
+  try {
+    await pedidosServices.updateEstado(idPedido, nuevoEstado);
+    
+    // Recargar pedidos
+    await getOrders();
+    
+    // Feedback visual
+    alert('Estado actualizado correctamente');
+  } catch (error) {
+    console.error('Error al cambiar estado:', error);
+    alert('Error al cambiar el estado: ' + error.message);
+  }
+}
+
+function navConfig() {
+  const navLinks = document.querySelectorAll('.nav-link');
+  
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      // Remover active de todos
+      navLinks.forEach(l => l.classList.remove('active'));
+      
+      // Agregar active al clickeado
+      link.classList.add('active');
+      
+      const texto = link.textContent.trim();
+      
+      if (texto === 'Dashboard' || texto === 'Órdenes Activas') {
+        vistaActual = 'activos';
+        document.querySelector('#orders-heading').textContent = 'Órdenes Activas';
+        getOrders();
+      }
+    });
+  });
+}
+
+function configFilters() {
+  const statusFilter = document.getElementById('status-filter');
+  
+  if (!statusFilter) return;
+  
+  // Llenar el select con los estados del backend
+  statusFilter.innerHTML = '<option value="">Todos los estados</option>';
+  estadosDisponibles.forEach(estado => {
+    const option = document.createElement('option');
+    option.value = estado.id_estado;
+    option.textContent = estado.nombre;
+    statusFilter.appendChild(option);
+  });
+  
+  // Event listener para filtrar
+  statusFilter.addEventListener('change', (e) => {
+    const idEstadoSeleccionado = e.target.value;
+    const pedidosActuales = vistaActual === 'activos' ? pedidosActivos : todosPedidos;
+    
+    // Si no hay filtro, mostrar todos
+    if (!idEstadoSeleccionado) {
+      renderizarTablaPedidos(pedidosActuales);
+      return;
+    }
+    
+    // Filtrar por ID de estado
+    const pedidosFiltrados = pedidosActuales.filter(
+      p => p.id_estado === parseInt(idEstadoSeleccionado)
+    );
+    renderizarTablaPedidos(pedidosFiltrados);
+  });
+}
+
+function btnsActionConfig() {
+  const tableWrapper = document.querySelector('.table-wrapper');
+  
+  if (!tableWrapper) return;
+  
+  tableWrapper.addEventListener('click', async (e) => {
+    const button = e.target.closest('.action-btn');
+    
+    if (button && !button.disabled) {
+      const idPedido = parseInt(button.dataset.pedidoId);
+      const nuevoEstado = parseInt(button.dataset.nuevoEstado);
+      
+      if (idPedido && nuevoEstado) {
+        // Deshabilitar botón mientras procesa
+        button.disabled = true;
+        button.textContent = 'Procesando...';
+        
+        await changeOrderEstado(idPedido, nuevoEstado);
+      }
+    }
+  });
+}
+
+function refreshOrders() {
+  setInterval(() => {
+    getOrders();
+  }, 60000);
+}
+
+async function adminPanel() {
+  const page = window.location.pathname;
+  
+  // Solo ejecutar en admin.html
+  if (!page.includes('admin.html')) return;
+  
+  // Proteger ruta
+  protectAdminRoute();
+  
+  // Cargar estados primero (necesarios para renderizar)
+  await getEstados();
+  
+  // Configurar UI
+  renderAuthUI();
+  navConfig();
+  configFilters();
+  btnsActionConfig();
+  
+  // Cargar datos iniciales
+  await getOrders();
+  
+  // Iniciar actualización automática
+  refreshOrders();
+}
+
 // ============= INICIALIZACIÓN =============
 document.addEventListener('DOMContentLoaded', () => {
   const page = window.location.pathname;
@@ -385,5 +692,9 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAuthUI();
     getProducts();
     loadCartSS();
+  }
+
+  if (page.includes('admin.html')) {
+    adminPanel();
   }
 });

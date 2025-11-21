@@ -76,17 +76,17 @@ export const authService = {
 
   isAdmin: () => {
     const user = authService.getUser();
-    return user?.id === 1;
+    return user?.id_rol === 1;
   },
 
   isBarista: () => {
     const user = authService.getUser();
-    return user?.id === 2;
+    return user?.id_rol === 2;
   },
 
   isCliente: () => {
     const user = authService.getUser();
-    return user?.id === 3;
+    return user?.id_rol === 3;
   },
 
   getMe: async () => {

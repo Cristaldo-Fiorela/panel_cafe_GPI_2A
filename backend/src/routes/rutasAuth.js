@@ -144,7 +144,8 @@ router.post('/login', async (req, res) => {
         id: usuario.id, 
         username: usuario.username,
         id_rol: usuario.id_rol,
-        rol: usuario.rol
+        rol: usuario.rol,
+        id_rol: usuario.id_rol
       },
       JWT_SECRET,
       { expiresIn: JWT_EXPIRES_IN }
@@ -157,7 +158,8 @@ router.post('/login', async (req, res) => {
         id: usuario.id,
         username: usuario.username,
         email: usuario.email,
-        rol: usuario.rol
+        rol: usuario.rol, 
+        id_rol: usuario.id_rol
       }
     });
     
