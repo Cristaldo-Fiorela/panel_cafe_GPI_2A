@@ -515,6 +515,12 @@ body {
   font-size: 0.875rem;
 }
 
+.logo-icon {
+  font-size: 2rem;
+  color: var(--primary);
+}
+
+
 @media (min-width: 1024px) {
   .content-grid {
       grid-template-columns: 2fr 1fr;

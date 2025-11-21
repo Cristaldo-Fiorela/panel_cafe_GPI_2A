@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Inicia sesión en Café del Día para realizar tus pedidos de café online.">
+    <meta name="description" content="Inicia sesión en 8AM Café para realizar tus pedidos de café online.">
     <meta name="keywords" content="café, login, iniciar sesión, pedidos café">
-    <title>Iniciar Sesión - Café del Día</title>
+    <title>Iniciar Sesión - 8AM Café</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -20,7 +20,7 @@
                 <span class="material-symbols-outlined logo-icon" aria-hidden="true">
                     coffee
                 </span>
-                <h1 class="logo-title">Café del Día</h1>
+                <h1 class="logo-title">8AM Café</h1>
             </header>
 
             <!-- Form Container -->
@@ -49,28 +49,16 @@
                     <!-- Password Field -->
                     <label class="field-label">
                         <span class="label-text">Contraseña</span>
-                        <div class="password-wrapper">
-                            <input 
-                                class="form-input password-input" 
-                                type="password"
-                                id="password"
-                                name="password"
-                                placeholder="Ingresa tu contraseña"
-                                autocomplete="current-password"
-                                required
-                                aria-required="true"
-                            >
-                            <button 
-                                type="button"
-                                class="password-toggle"
-                                aria-label="Mostrar contraseña"
-                                onclick="togglePassword()"
-                            >
-                                <span class="material-symbols-outlined" id="password-icon">
-                                    visibility
-                                </span>
-                            </button>
-                        </div>
+                        <input 
+                        class="form-input" 
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Ingresa tu contraseña"
+                        autocomplete="current-password"
+                        required
+                        aria-required="true"
+                        >
                     </label>
 
                     <!-- Login Button -->
@@ -81,14 +69,15 @@
 
                 <!-- Secondary Links -->
                 <nav class="secondary-links">
-                    <a class="link" href="#forgot-password">¿Olvidaste tu contraseña?</a>
                     <p class="secondary-text">
                         ¿No tienes cuenta? 
-                        <a class="link" href="#signup">Crea una aquí</a>
+                        <a class="link" href="./register.html">Crea una aquí</a>
                     </p>
+                    <a class="link" href="../index.html">Vuelve a Inicio</a>
                 </nav>
             </section>
         </div>
     </main>
+    <script src="../js/main.js" type="module"></script>
 </body>
 </html>

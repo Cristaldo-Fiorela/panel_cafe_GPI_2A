@@ -205,6 +205,7 @@ async function getProducts() {
     const products = await productosServices.getAll();
     renderProducts(products);
   } catch (err) {
+    emptyCart();
     console.error("Error al cargar productos:", err);
   }
 }
