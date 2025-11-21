@@ -8,10 +8,10 @@
     content="Descubre nuestro menú de 8AM Café y realiza tu pedido online. Espresso, Cappuccino, Latte y más opciones disponibles.">
   <meta name="keywords" content="café, pedidos online, menú café, espresso, cappuccino, latte">
   <title>Menú de Café - 8AM Café | Pedidos Online</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"> -->
   <link rel="stylesheet" href="./styles/client.css">
 </head>
 
@@ -52,115 +52,7 @@
           </header>
 
           <div class="products-grid">
-            <!-- Product 1: Espresso -->
-            <article class="product-card">
-              <div class="product-image" role="img" aria-label="Una taza de espresso intenso y aromático"
-                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDWNjpO8L_k-2PdYycwDjNZN_JtXuouWSIFNSjF_W0KnohSX768gQODBg4mbi2c1XWvZjxB7znk5Q1GGvDBXyyVYPmWavXSg_zeQqSZgZO75CjUzWL3Yo5s2OnpvizVOa74sqnlHgJDnSRYRxBMgJB6zs9V5_QQG5aRN5-DIBnDE7zPPsQE-Q4hR-M8-hGZoXBQacpVDXw9amL2kQl_SmE7wc9aVOsbtb7l8_U576CTtSUTM-GcFVUHh0t62w3Aoipa-xanpE70mG-O");'>
-              </div>
-              <div class="product-info">
-                <h3 class="product-name">Espresso</h3>
-                <p class="product-description">Un shot de café intenso y aromático, la esencia pura del café.</p>
-                <footer class="product-footer">
-                  <span class="product-price">$2.50</span>
-                  <button class="add-to-cart-btn" aria-label="Agregar Espresso al carrito">
-                    <span class="material-symbols-outlined" aria-hidden="true">add_shopping_cart</span>
-                    <span>Agregar</span>
-                  </button>
-                </footer>
-              </div>
-            </article>
-
-            <!-- Product 2: Cappuccino -->
-            <article class="product-card">
-              <div class="product-image" role="img"
-                aria-label="Un cappuccino con equilibrio perfecto de espresso y leche vaporizada"
-                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAZtaG0XwqglGvNwe9mv91alvpTma7ebC5xOmUdoj6SCR7dSsPDN5AV3XVfRAvj1mlng41Uzuvkx8ifyzCbZfMsWTVpuSpGyfDFbfIKFriFdhOwPPDge6Retn23K-GSZdTgtnGg7japPOQ2gdyOljvfYEnQuAXHSfRhZeA2LbV1M4mOG9H-FTFc-jtLjtVA8rOeCVD1A12TUH_KxcF94oCka19-O9aBAKVf9TxYq11JqhsIAHuIIhCWxoP9It5iYukaLuo1O50fwIVf");'>
-              </div>
-              <div class="product-info">
-                <h3 class="product-name">Cappuccino</h3>
-                <p class="product-description">Equilibrio perfecto entre espresso, leche vaporizada y espuma cremosa.
-                </p>
-                <footer class="product-footer">
-                  <span class="product-price">$3.50</span>
-                  <button class="add-to-cart-btn" aria-label="Agregar Cappuccino al carrito">
-                    <span class="material-symbols-outlined" aria-hidden="true">add_shopping_cart</span>
-                    <span>Agregar</span>
-                  </button>
-                </footer>
-              </div>
-            </article>
-
-            <!-- Product 3: Latte -->
-            <article class="product-card">
-              <div class="product-image" role="img" aria-label="Un latte suave y sedoso"
-                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBXTphueN5OX0ULGOZpVKtJzkDSGQoraBzm58Rxsbxw-tYFILylfTHWrm1SlzmLzDqNwb7nhEWMlSbxIfyCrWXu23sWN4w39aqGC-DF3nwxUg96qXAOoursYzUJrkRZxj2UFJL_PfOVsoR_N9bScbC8ZE4BPYzhnaAuIWcx7fCts-UU4S4f_H2Q-c3bh0ubVGJR9sE6yYfnevkr716mh36QtnPU2uyRTXjh52-EAmtFBV8K5oQAF1fC0jDUSZEFdTDEkcKXjm73U8gk");'>
-              </div>
-              <div class="product-info">
-                <h3 class="product-name">Latte</h3>
-                <p class="product-description">Suave y sedoso, con más leche vaporizada que un cappuccino.</p>
-                <footer class="product-footer">
-                  <span class="product-price">$4.00</span>
-                  <button class="add-to-cart-btn" aria-label="Agregar Latte al carrito">
-                    <span class="material-symbols-outlined" aria-hidden="true">add_shopping_cart</span>
-                    <span>Agregar</span>
-                  </button>
-                </footer>
-              </div>
-            </article>
-
-            <!-- Product 4: Americano -->
-            <article class="product-card">
-              <div class="product-image" role="img" aria-label="Un Americano clásico y robusto"
-                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAEpfq8vS3r_pnRB1L9Pb9rOu-f7in2XDtl7q1uWDMzuKF7KM88BLJFbBQInLQ5G34A0FjtU2SmtL1PsM4Lg9C6f1iML0tFJGeCyDmbfdnGP5wYElwr83kh6dZvdZnyfi6AwAp2fauZqao9niCqqZxKj5QAUlpJyI2uDn8sSZUNzEAOGebsBFSLlL7K-f3hvWg8milbXVTWe6oS7VPm8HrcUiy2yaf948BHt5RiX4Bbi392pNvTk5OWLvM9ywRd8nObCLMmGDWBkCQQ");'>
-              </div>
-              <div class="product-info">
-                <h3 class="product-name">Americano</h3>
-                <p class="product-description">Espresso diluido con agua caliente, un sabor clásico y robusto.</p>
-                <footer class="product-footer">
-                  <span class="product-price">$3.00</span>
-                  <button class="add-to-cart-btn" aria-label="Agregar Americano al carrito">
-                    <span class="material-symbols-outlined" aria-hidden="true">add_shopping_cart</span>
-                    <span>Agregar</span>
-                  </button>
-                </footer>
-              </div>
-            </article>
-
-            <!-- Product 5: Mocha -->
-            <article class="product-card">
-              <div class="product-image" role="img" aria-label="Una deliciosa mezcla de espresso, chocolate y leche"
-                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCnejVD0ZXtkJstPbuMZkM5VDVPmGpWUgFU5jQF3_ayFDGE1CAQg7LwzDgw7RNl5O_a5Hn-XgCpnIjJABotPFfeOrPjd_GmixJZc9dT89sgPv3GdEmN01EQFvB29GqeXbgIbwKrsw75q1PZLyeCdR-PBSIDveuJlDlD1Kh4cgA16dgIopWgoxDmaFNXCJjYvvfHEPzNTzs0zShlB5ksiOn2bLg3WpLQ2x3uHSobPVQ5fqvIYUY5NAo0RZB4BSWOt7hdDxBpQwZWC8z6");'>
-              </div>
-              <div class="product-info">
-                <h3 class="product-name">Mocha</h3>
-                <p class="product-description">Deliciosa mezcla de espresso, chocolate y leche vaporizada.</p>
-                <footer class="product-footer">
-                  <span class="product-price">$4.50</span>
-                  <button class="add-to-cart-btn" aria-label="Agregar Mocha al carrito">
-                    <span class="material-symbols-outlined" aria-hidden="true">add_shopping_cart</span>
-                    <span>Agregar</span>
-                  </button>
-                </footer>
-              </div>
-            </article>
-
-            <!-- Product 6: Flat White -->
-            <article class="product-card">
-              <div class="product-image" role="img" aria-label="Un Flat White intenso y suave"
-                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBjTktpzBth2WLzoCWx5tbjJiTpP5sju5-IkImdfSdk3z5iHd98ExJyet_T_FmaSzjMrCe6TOUtKKJKeSkyBanzuIR0zqVbn_ToKRu-4-5Ugsw3eK5AFDRnHoH40IJmVo3N3oDU3Th9MHLBGiXKc9kfMQ1IfcFB3UOqeuwxZoFR8_LNbYHG5900O5-yGLPwE_1zugPEojmOw4tTtvVvPZRlV3IvK-8X-A0CrW85LvdExHc9cUJceqEYGvbLY-pWj7rJwhyAqntnu2Ay");'>
-              </div>
-              <div class="product-info">
-                <h3 class="product-name">Flat White</h3>
-                <p class="product-description">Espresso con una fina capa de leche texturizada, intenso y suave.</p>
-                <footer class="product-footer">
-                  <span class="product-price">$4.25</span>
-                  <button class="add-to-cart-btn" aria-label="Agregar Flat White al carrito">
-                    <span class="material-symbols-outlined" aria-hidden="true">add_shopping_cart</span>
-                    <span>Agregar</span>
-                  </button>
-                </footer>
-              </div>
-            </article>
+              <!-- PRODUCTOS GENERADOS DINAMICAMENTE -->
           </div>
         </section>
 
@@ -171,55 +63,16 @@
               <h2 id="order-heading" class="order-title">Tu Pedido</h2>
 
               <div class="cart-items">
-                <!-- Cart Item 1 -->
-                <article class="cart-item">
-                  <div class="cart-item-image" role="img" aria-label="Cappuccino"
-                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAlqrr1pyseHgey3VlGSIKF5N9WSVS7yYNaRtUnEv4rq2NJEnobLuRNbrBzlTGLB_TLdaXMzf3ds2mvXeZ_qLIxxA62Nta5PRxd7AUrD-1PKypJ77TUNC3sFcfrhjyNuwl-Te5U_kj3a267D5T3AFcmxajkVqYvikApTNiquTqvEfA4cBcY20GWzdpFkeMiym8UugCkU4C-ouBrD9UcjWYntoDDn1BqYYkYRXiJF3Dm8m_1arGfkkZZeSkGhqY1HkCNkBVMPf9O7iQd");'>
-                  </div>
-                  <div class="cart-item-info">
-                    <h3 class="cart-item-name">Cappuccino</h3>
-                    <p class="cart-item-price">$3.50</p>
-                  </div>
-                  <div class="quantity-control">
-                    <button class="quantity-btn" aria-label="Disminuir cantidad de Cappuccino">-</button>
-                    <span class="quantity-value">1</span>
-                    <button class="quantity-btn" aria-label="Aumentar cantidad de Cappuccino">+</button>
-                  </div>
-                </article>
-
-                <!-- Cart Item 2 -->
-                <article class="cart-item">
-                  <div class="cart-item-image" role="img" aria-label="Mocha"
-                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDHABEDbi9_t7gpXAdTmyS6K-6O0yJwxdCdsCdN9VBlO39C3gSQQxbZOkAfkx9S-fOmDZfTsK-hCJOh7mi2TOkwugISEU0yqe3aXpYyvbAPlE4lcj5rDA8qlvalhQzWgo-OEIU2BN1rXvl0fDzwWeyDoz8GfOxZHWQ-LOek-o-aDPeV7ETNkxTmE5fASzkfMHKPKfRjlCwqvu3L_4p_KAvgXTYQyFLlF5N1-vl6gjjQpS6CoxjqN558fSKUHKkhoznsxygoxozEJMaz");'>
-                  </div>
-                  <div class="cart-item-info">
-                    <h3 class="cart-item-name">Mocha</h3>
-                    <p class="cart-item-price">$4.50</p>
-                  </div>
-                  <div class="quantity-control">
-                    <button class="quantity-btn" aria-label="Disminuir cantidad de Mocha">-</button>
-                    <span class="quantity-value">2</span>
-                    <button class="quantity-btn" aria-label="Aumentar cantidad de Mocha">+</button>
-                  </div>
-                </article>
               </div>
 
               <div class="order-divider"></div>
 
-              <div class="order-totals">
-                <div class="total-row">
-                  <span>Subtotal</span>
-                  <span>$12.50</span>
-                </div>
-                <div class="total-row">
-                  <span>Impuestos</span>
-                  <span>$1.00</span>
-                </div>
-                <div class="total-row final">
-                  <span>Total</span>
-                  <span>$13.50</span>
-                </div>
-              </div>
+          <div class="order-totals">
+            <div class="total-row final">
+              <span>Total</span>
+              <span>$0.00</span>
+            </div>
+          </div>
 
               <button class="confirm-btn" aria-label="Confirmar y realizar pedido">
                 Confirmar Pedido
@@ -230,6 +83,7 @@
       </div>
     </div>
   </main>
+  <script src="./js/main.js" type="module"></script>
 </body>
 
 </html>
