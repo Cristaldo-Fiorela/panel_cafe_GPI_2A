@@ -1,4 +1,4 @@
-import { authService } from './authService';
+import { authService } from './authService.js';
 
 const API_URL = 'http://localhost:3000/api/usuarios';
 

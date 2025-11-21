@@ -2,6 +2,7 @@
 import {  productosServices } from './services/productosService.js';
 import { pedidosServices } from './services/pedidosService.js';
 import { authService } from './services/authService.js';
+import { usuariosServices } from './services/usuariosService.js';
 
 // DOM containers
 const productsContainer = document.querySelector('.products-grid');
@@ -9,6 +10,9 @@ const cartItemsContainer = document.querySelector('.cart-items');
 const confirmOrderButton = document.querySelector('.confirm-btn');
 const totalOrderElement = document.querySelector('.order-totals .total-row.final span:last-child');
 const userMenu = document.querySelector('.user-menu');
+
+// FORMS
+const loginForm = document.getElementById('login')
 
 // VARIABLES 
 let shoppingCart = [];
@@ -36,7 +40,7 @@ function renderAuthUI() {
 
     // Event listener para logout
     const logoutBtn = userMenu.querySelector('.logout-btn');
-    logoutBtn.addEventListener('click', (e) => {
+    logoutBtn?.addEventListener('click', (e) => {
       e.preventDefault();
       if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
         authService.logout();
@@ -276,7 +280,7 @@ async function createOrder() {
 // ============= EVENT LISTENERS =============
 
 // Agregar productos al carrito
-productsContainer.addEventListener('click', (e) => {
+productsContainer?.addEventListener('click', (e) => {
   const button = e.target.closest('.add-to-cart-btn');
   if (button && !button.disabled) {
     const productId = parseInt(button.dataset.productId);
@@ -296,7 +300,7 @@ productsContainer.addEventListener('click', (e) => {
 });
 
 // Controles de cantidad en el carrito
-cartItemsContainer.addEventListener('click', (e) => {
+cartItemsContainer?.addEventListener('click', (e) => {
   const button = e.target.closest('.quantity-btn');
   if (button) {
     const cartItem = button.closest('.cart-item');
@@ -311,11 +315,75 @@ cartItemsContainer.addEventListener('click', (e) => {
 });
 
 // Confirmar pedido
-confirmOrderButton.addEventListener('click', createOrder);
+confirmOrderButton?.addEventListener('click', createOrder);
 
+
+// ================ LOGIN ===================
+
+loginForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  // datos del form
+  const formData = new FormData(e.target);
+  const usernameOrEmail = formData.get('username');
+  const password = formData.get('password');
+
+  if (!usernameOrEmail || !password) {
+    alert('Por favor, completa todos los campos');
+    return;
+  }
+
+  const submitButton = e.target.querySelector('button[type="submit"]');
+
+  try {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Iniciando sesión...';
+ 
+    const response = await authService.login({
+      username: usernameOrEmail,
+      password: password
+    });
+
+    if (response.user) {      // para seguridad
+      e.target.reset();
+      
+      // Redirigir según el rol del usuario
+      if (authService.isAdmin()) {
+        window.location.href = '/frontend/pages/admin.html';
+      } else if (authService.isBarista()) {
+        window.location.href = '/frontend/pages/admin.html';
+      } else if (authService.isCliente()) {
+        window.location.href = '/frontend/index.html';
+      } else {
+        window.location.href = '/frontend/index.html';
+      }
+    }
+
+  } catch (error) {
+    console.error('Error al iniciar sesión:', error);
+    alert(error.message || 'Error al iniciar sesión. Por favor, intenta nuevamente.');
+    
+    // Rehabilitar el botón
+    const submitButton = e.target.querySelector('button[type="submit"]');
+    submitButton.disabled = false;
+    submitButton.textContent = 'Iniciar Sesión';
+    
+    // por seguridad
+    document.getElementById('password').value = '';
+  }
+
+});
+
+function loginUser() {
+  const login = authService.login();
+}
 // ============= INICIALIZACIÓN =============
 document.addEventListener('DOMContentLoaded', () => {
-  renderAuthUI();
-  getProducts();
-  loadCartSS();
+  const page = window.location.pathname;
+
+  if (page.endsWith('index.html') || page.endsWith('/')) {
+    renderAuthUI();
+    getProducts();
+    loadCartSS();
+  }
 });

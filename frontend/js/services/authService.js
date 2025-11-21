@@ -58,7 +58,7 @@ export const authService = {
   logout: () => {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('user');
-    window.location.href = '/frontend/pages/login.html';
+    window.location.href = '/frontend/index.html';
   },
 
   getToken: () => {
@@ -76,17 +76,17 @@ export const authService = {
 
   isAdmin: () => {
     const user = authService.getUser();
-    return user?.id_rol === 1;
+    return user?.id === 1;
   },
 
   isBarista: () => {
     const user = authService.getUser();
-    return user?.id_rol === 2;
+    return user?.id === 2;
   },
 
   isCliente: () => {
     const user = authService.getUser();
-    return user?.id_rol === 3;
+    return user?.id === 3;
   },
 
   getMe: async () => {
