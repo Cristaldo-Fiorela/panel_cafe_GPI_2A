@@ -104,7 +104,7 @@ INSERT INTO producto (nombre, descripcion, precio, imagen_url, stock, disponible
   ('Muffin', 'Muffin de arándanos', 2.75, 'https://images.unsplash.com/photo-1607478900766-efe13248b125', 40, TRUE),
   ('Cookie', 'Cookie de chips de chocolate', 2.00, 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e', 60, TRUE);
 
--- crear admin inicial
+-- crear admin inicial 
 INSERT INTO usuario (username, password, email, id_rol) 
 VALUES (
   'admin', 
