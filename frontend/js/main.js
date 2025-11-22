@@ -39,8 +39,6 @@ function renderAuthUI() {
         </div>
       </button>
       <div class="user-dropdown" role="menu">
-        <a href="/perfil.html" class="dropdown-link" role="menuitem">Mi Perfil</a>
-        <a href="/pedidos.html" class="dropdown-link" role="menuitem">Historial de Pedidos</a>
         <div class="dropdown-divider"></div>
         <button class="dropdown-link danger logout-btn" role="menuitem">Cerrar Sesión</button>
       </div>
@@ -619,30 +617,6 @@ async function changeOrderEstado(idPedido, nuevoEstado) {
   }
 }
 
-function navConfig() {
-  const navLinks = document.querySelectorAll('.nav-link');
-  
-  navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      
-      // Remover active de todos
-      navLinks.forEach(l => l.classList.remove('active'));
-      
-      // Agregar active al clickeado
-      link.classList.add('active');
-      
-      const texto = link.textContent.trim();
-      
-      if (texto === 'Dashboard' || texto === 'Órdenes Activas') {
-        vistaActual = 'activos';
-        document.querySelector('#orders-heading').textContent = 'Órdenes Activas';
-        getOrders();
-      }
-    });
-  });
-}
-
 function configFilters() {
   const statusFilter = document.getElementById('status-filter');
   
@@ -705,7 +679,7 @@ function refreshOrders() {
   }, 60000);
 }
 
-async function adminPanel() {
+async function adminOrdersPanel() {
   const page = window.location.pathname;
   
   // Solo ejecutar en admin.html
@@ -719,7 +693,6 @@ async function adminPanel() {
   
   // Configurar UI
   renderAuthUI();
-  navConfig();
   configFilters();
   btnsActionConfig();
   
@@ -730,7 +703,21 @@ async function adminPanel() {
   refreshOrders();
 }
 
-console.log(vistaActual);
+async function adminProductsPage() {
+  const page = window.location.pathname;
+  
+  // Solo ejecutar en adminProduct.html
+  if (!page.includes('adminProduct.html')) return;
+  
+  // Proteger ruta
+  protectAdminRoute();
+  
+  // Configurar UI
+  renderAuthUI();
+  
+  // Cargar productos
+  await getProducts();
+}
 // ============= INICIALIZACIÓN =============
 document.addEventListener('DOMContentLoaded', () => {
   const page = window.location.pathname;
@@ -742,6 +729,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (page.includes('admin.html')) {
-    adminPanel();
+    adminOrdersPanel();
+  }
+  if (page.includes('adminProduct.html')) {
+    adminProductsPage();
   }
 });

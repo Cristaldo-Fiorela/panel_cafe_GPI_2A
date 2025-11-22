@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Panel de administración para gestionar órdenes de café en tiempo real en 8AM Café" />
+  <meta name="keywords" content="café, administración, órdenes, panel, gestión" />
+  <title>Panel de Administración - 8AM Café</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles/admin.css" />
+</head>
+
+<body>
+  <div class="admin-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <header class="sidebar-header">
+        <span class="material-symbols-outlined logo" style="font-size: 48px; color: #d46211;">coffee</span>
+        <div class="sidebar-title">
+          <h1>8AM Café</h1>
+          <p class="sidebar-subtitle">Admin Panel</p>
+        </div>
+      </header>
+
+      <nav aria-label="Navegación principal">
+        <a href="./admin.html" class="nav-link active" data-view="activos" aria-current="page">
+          <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-link" data-view="menu">
+          <span class="material-symbols-outlined" aria-hidden="true">receipt_long</span>
+          <span>Menu</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="content-wrapper">
+        <!-- Page Header -->
+        <header class="page-header">
+          <div>
+            <h1>Panel de Administración</h1>
+            <p>
+              Gestiona y monitorea todas las órdenes de café
+              en tiempo real.
+            </p>
+          </div>
+        
+          <div class="user-menu" aria-label="Menú de usuario">
+            <!-- boton de login o usuario logeado -->
+          </div>
+        </header>
+
+        <!-- Grid de Productos -->
+        <section class="products-admin-section">
+          <div class="products-grid">
+            <!-- Los productos se cargarán aquí -->
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+  
+  <script src="../js/main.js" type="module"></script>
+</body>
+
+</html>
