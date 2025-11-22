@@ -60,15 +60,88 @@
 
         <!-- Grid de Productos -->
         <section class="products-admin-section">
+          <button class="add-product-btn" id="add-product-btn">
+            <span class="material-symbols-outlined">add_circle</span>
+            <span>Agregar Producto</span>
+          </button>
           <div class="products-grid">
             <!-- Los productos se cargarán aquí -->
           </div>
         </section>
 
       </div>
+
+      <!-- Modal de Producto -->
+    <div class="modal-overlay" id="product-modal" style="display: none;">
+      <div class="modal-container">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div class="modal-title-wrapper">
+            <h2 class="modal-title">Crear Nuevo Producto</h2>
+            <p class="modal-subtitle">Rellena los detalles para añadir un nuevo producto de café.</p>
+          </div>
+          <button class="modal-close-btn">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <!-- Modal Body - Form -->
+        <div class="modal-body">
+          <form class="modal-form" id="product-form">
+            <div class="form-grid">
+              <!-- Nombre del Producto -->
+              <div class="form-group full-width">
+                <label for="product-name">Nombre del producto</label>
+                <input type="text" id="product-name" placeholder="Ej: Café de Origen Único Etiopía" required>
+              </div>
+
+              <!-- Descripción -->
+              <div class="form-group full-width">
+                <label for="product-description">Descripción</label>
+                <textarea id="product-description" placeholder="Describe las notas de sabor, el origen y el proceso del café."></textarea>
+              </div>
+
+              <!-- Precio -->
+              <div class="form-group">
+                <label for="product-price">Precio</label>
+                <input type="number" id="product-price" step="0.01" min="0" placeholder="15.00" required>
+              </div>
+
+              <!-- Stock -->
+              <div class="form-group">
+                <label for="product-stock">Stock</label>
+                <input type="number" id="product-stock" placeholder="100" min="0" required>
+              </div>
+
+              <!-- URL de Imagen -->
+              <div class="form-group full-width">
+                <label for="product-image">URL de la imagen</label>
+                <input type="text" id="product-image" placeholder="https://example.com/imagen.jpg">
+              </div>
+
+              <!-- Toggle Disponibilidad -->
+              <div class="toggle-container">
+                <label for="product-available">Disponible</label>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="product-available" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="save-product-btn">Guardar Cambios</button>
+        </div>
+      </div>
+    </div>
+
     </main>
   </div>
-  
+
   <script src="../js/main.js" type="module"></script>
 </body>
 

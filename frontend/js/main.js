@@ -226,7 +226,7 @@ function productCardAdmin(data) {
   const statusText = isAvailable ? 'Disponible' : 'No disponible';
   
   return `
-    <div class="product-image" 
+    <div class="product-image ${disponible == 0 ? 'out-of-stock' : ''}" 
          role="img" 
          aria-label="${descripcion}"
          style="background-image: url(${imagen_url});">
@@ -487,6 +487,26 @@ registerForm?.addEventListener('submit', async (e) => {
   }
 });
 
+// Menu admin
+adminProductContainer?.addEventListener('click',  async (e) => {
+  const editBtn = e.target.closest('.edit-btn');
+  const deleteBtn = e.target.closest('.delete-btn');
+
+  if(deleteBtn && !deleteBtn.disabled) {
+    const productId = parseInt(deleteBtn.dataset.productId);
+
+    await deleteProductAdmin(productId);
+  }
+  
+  if (editBtn && !editBtn.disabled) {
+    const productId = parseInt(editBtn.dataset.productId);
+    const producto = await productosServices.getOne(productId);
+    if(producto) {
+      openProductModal(producto);
+    }
+  }
+});
+
 // ================ ADMIN =======================
 async function getEstados() {
   try {
@@ -742,43 +762,119 @@ async function adminOrdersPanel() {
 async function adminProductsPage() {
   const page = window.location.pathname;
   
-  // Solo ejecutar en adminProduct.html
   if (!page.includes('adminProduct.html')) return;
   
-  // Proteger ruta
   protectAdminRoute();
-  
-  // Configurar UI
   renderAuthUI();
   
+  // Cargar productos
+  const products = await productosServices.getAll();
+  const productsContainer = document.querySelector('.products-grid');
+  
+  productsContainer.innerHTML = '';
+  
+  products.forEach(product => {
+    const article = document.createElement('article');
+    article.classList.add('product-card-admin');
+    article.dataset.id = product.id_producto;
+    article.innerHTML = productCardAdmin(product);
+    productsContainer.appendChild(article);
+  });
+  
+  // Configurar botones del modal (AGREGAR ESTA LÍNEA)
+  setupModalButtons();
+}
+
+async function deleteProductAdmin(id) {
   try {
-    const products = await productosServices.getAll();
-    const productsContainer = document.querySelector('.products-grid');
-    
-    if (!productsContainer) {
-      console.error('Container .products-grid no encontrado');
+
+    if (!confirm('¿Estás seguro de que deseas eliminar este producto?')) {
       return;
     }
+
+    const response = await productosServices.delete(id);
     
-    productsContainer.innerHTML = '';
-    
-    if (products.length === 0) {
-      productsContainer.innerHTML = '<p style="text-align: center; padding: 2rem;">No hay productos disponibles</p>';
-      return;
+    if(response) {
+      alert('Producto eliminado exitosamente');
+
+      await adminProductsPage();
     }
-    
-    products.forEach(product => {
-      const article = document.createElement('article');
-      article.classList.add('product-card-admin');
-      article.dataset.id = product.id_producto;
-      article.innerHTML = productCardAdmin(product);
-      productsContainer.appendChild(article);
-    });
-    
   } catch (error) {
-    console.error('Error al cargar productos:', error);
+    console.error(error);
+    alert(error.message);
   }
 }
+
+async function editProductAdmin(producto) {
+  try {
+  } catch (error) {
+    
+  }
+}
+
+// ===== ADMIN MODAL
+function openProductModal(productData = null) {
+  const modal = document.getElementById('product-modal');
+  
+  const title = modal.querySelector('.modal-title');
+  const subtitle = modal.querySelector('.modal-subtitle');
+  const saveBtn = modal.querySelector('#save-product-btn');
+  
+  if (productData) {
+    // MODO EDITAR
+    title.textContent = 'Editar Producto';
+    subtitle.textContent = 'Modifica los detalles del producto de café.';
+    saveBtn.textContent = 'Guardar Cambios';
+    
+    // Llenar campos con datos existentes
+    document.getElementById('product-name').value = productData.nombre || '';
+    document.getElementById('product-description').value = productData.descripcion || '';
+    document.getElementById('product-price').value = productData.precio || '';
+    document.getElementById('product-stock').value = productData.stock || '';
+    document.getElementById('product-image').value = productData.imagen_url || '';
+    document.getElementById('product-available').checked = productData.disponible == 1;
+    
+    // Guardar el ID para saber que es edición
+    saveBtn.dataset.productId = productData.id_producto;
+  } else {
+    // MODO CREAR
+    title.textContent = 'Crear Nuevo Producto';
+    subtitle.textContent = 'Rellena los detalles para añadir un nuevo producto de café.';
+    saveBtn.textContent = 'Crear Producto';
+    
+    // Limpiar formulario
+    document.getElementById('product-form').reset();
+    document.getElementById('product-available').checked = true;
+    
+    // Remover el ID
+    delete saveBtn.dataset.productId;
+  }
+  
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProductModal() {
+  const modal = document.getElementById('product-modal');
+  modal.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function setupModalButtons() {
+  // nuevo
+  const addBtn = document.getElementById('add-product-btn');
+  addBtn?.addEventListener('click', () => openProductModal());
+  
+  // cerrar
+  const closeBtn = document.querySelector('.modal-close-btn');
+  closeBtn?.addEventListener('click', closeProductModal);
+  
+  // cancelar
+  const cancelBtn = document.querySelector('.modal-footer .btn-secondary');
+  cancelBtn?.addEventListener('click', closeProductModal);
+}
+
+
 // ============= INICIALIZACIÓN =============
 document.addEventListener('DOMContentLoaded', () => {
   const page = window.location.pathname;
