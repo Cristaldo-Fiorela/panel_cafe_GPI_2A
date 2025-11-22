@@ -147,7 +147,7 @@ router.put('/:id', verificarToken, esAdmin, async (req, res) => {
     }
 
     // QUERY SQL dinamico
-    const columnas = Object.keys(actualizar).map( campo => `${campo} ?`);
+    const columnas = Object.keys(actualizar).map( campo => `${campo} = ?`);
     const nuevosValores = [...Object.values(actualizar), id]
     const SQL = `
       UPDATE producto

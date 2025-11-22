@@ -767,22 +767,37 @@ async function adminProductsPage() {
   protectAdminRoute();
   renderAuthUI();
   
-  // Cargar productos
-  const products = await productosServices.getAll();
-  const productsContainer = document.querySelector('.products-grid');
-  
-  productsContainer.innerHTML = '';
-  
-  products.forEach(product => {
-    const article = document.createElement('article');
-    article.classList.add('product-card-admin');
-    article.dataset.id = product.id_producto;
-    article.innerHTML = productCardAdmin(product);
-    productsContainer.appendChild(article);
-  });
+  loadAdminProducts();
   
   // Configurar botones del modal (AGREGAR ESTA LÍNEA)
   setupModalButtons();
+}
+
+async function loadAdminProducts() {
+  try {
+    const products = await productosServices.getAll();
+    const productsContainer = document.querySelector('.products-grid');
+    
+    if (!productsContainer) return;
+    
+    productsContainer.innerHTML = '';
+    
+    if (products.length === 0) {
+      productsContainer.innerHTML = '<p style="text-align: center; padding: 2rem;">No hay productos disponibles</p>';
+      return;
+    }
+    
+    products.forEach(product => {
+      const article = document.createElement('article');
+      article.classList.add('product-card-admin');
+      article.dataset.id = product.id_producto;
+      article.innerHTML = productCardAdmin(product);
+      productsContainer.appendChild(article);
+    });
+    
+  } catch (error) {
+    console.error('Error al cargar productos:', error);
+  }
 }
 
 async function deleteProductAdmin(id) {
@@ -872,8 +887,67 @@ function setupModalButtons() {
   // cancelar
   const cancelBtn = document.querySelector('.modal-footer .btn-secondary');
   cancelBtn?.addEventListener('click', closeProductModal);
+
+  // guardar
+  const saveBtn = document.getElementById('save-product-btn');
+  saveBtn?.addEventListener('click', saveProduct);
 }
 
+async function saveProduct() {
+  const form = document.getElementById('product-form');
+  
+  // funcion nativa de html 
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
+  // datos del form
+  const productData = {
+    nombre: document.getElementById('product-name').value.trim(),
+    descripcion: document.getElementById('product-description').value.trim(),
+    precio: parseFloat(document.getElementById('product-price').value),
+    stock: parseInt(document.getElementById('product-stock').value),
+    imagen_url: document.getElementById('product-image').value.trim(),
+    disponible: document.getElementById('product-available').checked ? 1 : 0
+  };
+
+  const saveBtn = document.getElementById('save-product-btn');
+  const originalText = saveBtn.textContent;
+  
+  try {
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Guardando...';
+
+    // Verificar si es edición o creación
+    const productId = saveBtn.dataset.productId;
+
+    if (productId) {
+      // EDITAR 
+      // agregamos el id del producto al objeto creado
+      productData.id_producto = parseInt(productId);
+      await productosServices.update(productData);
+      alert('Producto actualizado exitosamente');
+    } else {
+      // se manda el objto
+      await productosServices.create(productData);
+      alert('Producto creado exitosamente');
+    }
+
+    // Cerrar modal
+    closeProductModal();
+    
+    // Recargar productos
+    await loadAdminProducts();
+
+  } catch (error) {
+    console.error('Error al guardar producto:', error);
+    alert('Error: ' + error.message);
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = originalText;
+  }
+}
 
 // ============= INICIALIZACIÓN =============
 document.addEventListener('DOMContentLoaded', () => {
