@@ -10,6 +10,7 @@ const cartItemsContainer = document.querySelector('.cart-items');
 const confirmOrderButton = document.querySelector('.confirm-btn');
 const totalOrderElement = document.querySelector('.order-totals .total-row.final span:last-child');
 const userMenu = document.querySelector('.user-menu');
+const adminProductContainer = document.querySelector('.products-grid');
 
 // FORMS
 const loginForm = document.getElementById('login');
@@ -215,6 +216,41 @@ function productCard(data) {
   `;
   
   return card;
+}
+
+function productCardAdmin(data) {
+  const {id_producto, descripcion, disponible, stock, imagen_url, nombre, precio } = data;
+  
+  const isAvailable = disponible == 1;
+  const statusClass = isAvailable ? 'available' : 'unavailable';
+  const statusText = isAvailable ? 'Disponible' : 'No disponible';
+  
+  return `
+    <div class="product-image" 
+         role="img" 
+         aria-label="${descripcion}"
+         style="background-image: url(${imagen_url});">
+    </div>
+    <div class="product-info">
+      <h3 class="product-name">${nombre}</h3>
+      <p class="product-description">${descripcion}</p>
+      <div class="product-meta">
+        <p class="product-price">$${precio}</p>
+        <span class="status-badge ${statusClass}">${statusText}</span>
+      </div>
+      <p class="product-stock">Stock: ${stock || 0} u.</p>
+    </div>
+    <div class="product-footer-admin">
+      <button class="admin-btn edit-btn" data-product-id="${id_producto}">
+        <span class="material-symbols-outlined">edit</span>
+        Editar
+      </button>
+      <button class="admin-btn delete-btn" data-product-id="${id_producto}">
+        <span class="material-symbols-outlined">delete</span>
+        Eliminar
+      </button>
+    </div>
+  `;
 }
 
 function renderProducts(products) {
@@ -715,8 +751,33 @@ async function adminProductsPage() {
   // Configurar UI
   renderAuthUI();
   
-  // Cargar productos
-  await getProducts();
+  try {
+    const products = await productosServices.getAll();
+    const productsContainer = document.querySelector('.products-grid');
+    
+    if (!productsContainer) {
+      console.error('Container .products-grid no encontrado');
+      return;
+    }
+    
+    productsContainer.innerHTML = '';
+    
+    if (products.length === 0) {
+      productsContainer.innerHTML = '<p style="text-align: center; padding: 2rem;">No hay productos disponibles</p>';
+      return;
+    }
+    
+    products.forEach(product => {
+      const article = document.createElement('article');
+      article.classList.add('product-card-admin');
+      article.dataset.id = product.id_producto;
+      article.innerHTML = productCardAdmin(product);
+      productsContainer.appendChild(article);
+    });
+    
+  } catch (error) {
+    console.error('Error al cargar productos:', error);
+  }
 }
 // ============= INICIALIZACIÓN =============
 document.addEventListener('DOMContentLoaded', () => {

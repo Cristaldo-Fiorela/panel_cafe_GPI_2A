@@ -7,6 +7,7 @@
   --status-in-prep: #007BFF;
   --status-ready: #28A745;
   --status-delivered: #6C757D;
+  --status-cancel: #dc2626;
   --gray-50: #f9fafb;
   --gray-100: #f3f4f6;
   --gray-200: #e5e7eb;
@@ -18,7 +19,7 @@
   --gray-900: #111827;
   --card-light: #ffffff;
   --card-dark: #2a1e14;
-  --border-light: #f3ece7;
+  --border-light: var(--bg-light);
   --border-dark: #3f2d1e;
 }
 
@@ -506,6 +507,140 @@ td:last-child {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
 }
+
+/* Products Grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Product Card Admin Container */
+.product-card-admin {
+  display: flex;
+  flex-direction: column;
+  background-color: #fcfaf8;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--bg-light);
+  transition: all 0.3s;
+}
+
+.product-card-admin:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-0.25rem);
+}
+
+/* Product Image */
+.product-card-admin .product-image {
+  aspect-ratio: 16 / 9;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Product Info Container */
+.product-card-admin .product-info {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.product-card-admin .product-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1b130d;
+}
+
+.product-card-admin .product-description {
+  font-size: 0.875rem;
+  color: var(--coffee-brown)c;
+  margin-top: 0.25rem;
+  flex-grow: 1;
+}
+/* Price and Status Section */
+.product-card-admin .product-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.product-card-admin .product-price {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #d46211;
+}
+
+/* Status Badge */
+.product-card-admin .status-badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.product-card-admin .status-badge.available {
+  color: #15803d;
+  background-color: #dcfce7;
+}
+
+.product-card-admin .status-badge.unavailable {
+  color: #991b1b;
+  background-color: #fee2e2;
+}
+
+/* Stock Text */
+.product-card-admin .product-stock {
+  font-size: 0.75rem;
+  color: var(--coffee-brown)c;
+  margin-top: 0.5rem;
+}
+
+
+/* Action Buttons Footer */
+.product-card-admin .product-footer-admin {
+  display: flex;
+  border-top: 1px solid var(--bg-light);
+}
+
+.product-card-admin .admin-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.product-card-admin .edit-btn {
+  color: var(--status-in-prep);
+}
+
+.product-card-admin .edit-btn:hover {
+  background-color: var(--status-in-prep);
+  color: var(--bg-light);
+}
+.product-card-admin .delete-btn {
+  color: var(--status-cancel);
+  border-left: 1px solid var(--bg-light);
+}
+
+.product-card-admin .delete-btn:hover {
+  color: var(--bg-light);
+  background-color: var(--status-cancel);
+}
+
+.product-card-admin .admin-btn .material-symbols-outlined {
+  font-size: 1rem;
+}
+
 
 /* Responsive */
 @media (max-width: 1024px) {
