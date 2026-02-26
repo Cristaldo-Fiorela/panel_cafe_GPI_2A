@@ -13,6 +13,17 @@ Trabajo Práctico de Programación Web 2025. Sistema completo de administración
 - **Base de Datos**: MySQL
 - **Herramientas**: Visual Studio Code, MySQL Workbench
 
+## 🖼️ Vista Previa
+
+### Panel de Pedidos
+![Panel de pedidos](https://github.com/user-attachments/assets/8c7372c2-c209-4082-980e-a1b072c7ea30)
+
+### Gestor de Productos (Admin)
+![Gestor de productos](https://github.com/user-attachments/assets/602224f7-dd19-468e-a579-d150ce30871e)
+
+### Administración de Pedidos (Admin)
+![Administración de pedidos](https://github.com/user-attachments/assets/2d1c5826-caa9-4219-92a8-3dd5d6207765)
+
 ## 📦 Requisitos Previos
 
 Antes de comenzar, asegúrate de tener instalado:
